@@ -14,6 +14,7 @@ const UserTable = ({ columns, statusProp }) => {
     const [etc, setEtc] = useState("");
     const [rank, setRank] = useState("아기냥이");
     const [data, setData] = useState([]);
+    const [reason, setReason] = useState("");
 
     const rootSelect = ["인벤", "공홈", "지인"];
     const rankSelect = ["킹냥이", "집냥이", "뚱냥이", "아기냥이"];    
@@ -31,6 +32,8 @@ const UserTable = ({ columns, statusProp }) => {
             setEtc(value);
         } else if (name === "rankSelect") {
             setRank(value);
+        } else if (name === "reason") {
+            setReason(value);
         }
     };
 
@@ -45,6 +48,7 @@ const UserTable = ({ columns, statusProp }) => {
             partner: partner,
             etc: etc,
             rank: rank,
+            reason: reason,
             status: "정상",
         };
 
@@ -77,13 +81,17 @@ const UserTable = ({ columns, statusProp }) => {
         if (ok) {
             if (data.status === "정상") {
                 await updateDoc(doc(dbService, "users", data.id), {
-                    status: "탈퇴"
+                    status: "탈퇴",
+                    reason: reason,
                 });
             } else if (data.status === "탈퇴") {
                 await updateDoc(doc(dbService, "users", data.id), {
-                    status: "정상"
+                    status: "정상",
+                    reason: "",
                 });
             }
+
+            setReason("");
         }
     }
 
@@ -123,6 +131,13 @@ const UserTable = ({ columns, statusProp }) => {
                             <td>{ data.partner }</td>
                             <td>{ data.etc }</td>
                             <td>{ data.rank }</td>
+                            
+                            {statusProp === "정상" ? (
+                                <td><input type="text" name="reason" onChange={onChange} value={ reason } placeholder="탈퇴사유" /></td>
+                            ) : (
+                                <td>{ data.reason }</td>
+                            )}
+
                             <td>
                                 <button>수정</button>
                                 { data.status === "탈퇴" ? (

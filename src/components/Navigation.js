@@ -36,7 +36,7 @@ const Navigation = ({ userObj }) => {
             { userObj.displayName }
             <button onClick={onLogOutClick}>로그아웃</button>
 
-            {userObj.displayName === null &&
+            { userObj.displayName === null &&
                 <form onSubmit={onSubmit}>
                     <input type="text" onChange={onChange} value={name} placeholder="이름" />
                     <input type="submit" value="변경" />

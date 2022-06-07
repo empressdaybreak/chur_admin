@@ -10,6 +10,7 @@ const DashBoard = () => {
         { Header: "지인" },
         { Header: "비고" },
         { Header: "계급" },
+        { Header: "탈퇴사유" },
         { Header: "수정 / 탈퇴 / 삭제" },
         { Header: "상태" },
     ];
