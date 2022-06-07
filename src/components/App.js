@@ -15,6 +15,7 @@ function App() {
         setUserObj({
           email: user.email,
           uid: user.uid,
+          displayName: user.displayName,
         })
       } else {
         setIsLoggedIn(false);
