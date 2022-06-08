@@ -3,6 +3,101 @@ import { addDoc, collection, deleteDoc, doc, onSnapshot, query, updateDoc, where
 import { dbService } from "../fbase";
 import moment from "moment";
 import "moment/locale/ko";
+import styled from "styled-components";
+
+const UserTableStyle = styled.table`
+    text-align: center;
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+
+    width: 100%;
+    border-collapse: collapse;
+
+    & tbody tr {
+        height: 60px;
+
+        &:not(:last-child) {
+            border-bottom: 1px solid #000;
+        }
+    }
+`;
+
+const ButtonCell = styled.td`
+    & button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+    }
+
+    & button:first-child {
+        background-color: skyblue;    
+    }
+
+    & button:nth-child(2) {
+        background-color: red;
+        margin: 0 5px;
+    }
+
+    & button:last-child {
+        background-color: orange;
+    }
+`;
+
+const ModalAlert = styled.div`
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    & > div {
+        width: 300px;
+        height: 200px;
+        background: #fff;
+        
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -150px;
+        margin-top: -100px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        padding: 15px;
+        box-sizing: border-box;
+        
+        & > p {
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+        }
+    }
+`;
+
+const ModalButtonContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & > button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+    }
+
+    & > button:first-child {
+        background-color: red;
+    }
+
+    & > button:last-child {
+        background-color: orange;
+    }
+`;
 
 const UserTable = ({ columns, statusProp }) => { 
     const date = moment().format("YYYY-MM-DD");
@@ -15,6 +110,8 @@ const UserTable = ({ columns, statusProp }) => {
     const [rank, setRank] = useState("아기냥이");
     const [data, setData] = useState([]);
     const [reason, setReason] = useState("");
+
+    const [withdrawalToggle, setWithdrawalToggle] = useState(false);
 
     const rootSelect = ["인벤", "공홈", "지인"];
     const rankSelect = ["킹냥이", "집냥이", "뚱냥이", "아기냥이"];    
@@ -68,32 +165,26 @@ const UserTable = ({ columns, statusProp }) => {
     };
 
     const onWithdrawalClick = async (data) => {
-        let statusOk = "";
+        if (reason === "" && data.status === "정상") {
+            alert("탈퇴 사유를 입력해주세요.");
+            return false;
+        }
+        setWithdrawalToggle(false);
 
         if (data.status === "정상") {
-            statusOk = "탈퇴";
+            await updateDoc(doc(dbService, "users", data.id), {
+                status: "탈퇴",
+                reason: reason,
+            });            
         } else if (data.status === "탈퇴") {
-            statusOk = "복구";
+            await updateDoc(doc(dbService, "users", data.id), {
+                status: "정상",
+                reason: "",
+            });
         }
 
-        const ok = window.confirm(statusOk + " 처리 하시겠습니까?");
-
-        if (ok) {
-            if (data.status === "정상") {
-                await updateDoc(doc(dbService, "users", data.id), {
-                    status: "탈퇴",
-                    reason: reason,
-                });
-            } else if (data.status === "탈퇴") {
-                await updateDoc(doc(dbService, "users", data.id), {
-                    status: "정상",
-                    reason: "",
-                });
-            }
-
-            setReason("");
-        }
-    }
+        setReason("");
+    };
 
     useEffect(() => {
         const q = query(collection(dbService, "users"), where("status", "==", statusProp));
@@ -109,11 +200,11 @@ const UserTable = ({ columns, statusProp }) => {
 
     return (
         <>
-            <table>
+            <UserTableStyle>
                 <thead>
-                    <tr>
+                    <tr style={{borderBottom: "1px solid #000", height: "40px"}}>
                         {columns.map((column, index) => (
-                            <th key={index}>
+                            <th key={index} width={ column.Width }>
                                 { column.Header }
                             </th>  
                         ))}
@@ -132,27 +223,44 @@ const UserTable = ({ columns, statusProp }) => {
                             <td>{ data.etc }</td>
                             <td>{ data.rank }</td>
                             
-                            {statusProp === "정상" ? (
-                                <td><input type="text" name="reason" onChange={onChange} value={ reason } placeholder="탈퇴사유" /></td>
+                            { statusProp === "정상" ? (
+                                <ButtonCell>
+                                    <button>수정</button>
+                                    <button onClick={() => setWithdrawalToggle(true)}>탈퇴</button>
+                                    <button onClick={() => onDeleteClick(data.id)}>삭제</button>
+                                </ButtonCell>
                             ) : (
-                                <td>{ data.reason }</td>
-                            )}
+                                <>
+                                    <td>{data.reason}</td> 
+                                        
+                                    <ButtonCell>
+                                        <button onClick={() => setWithdrawalToggle(true)}>복구</button>
+                                        <button onClick={() => onDeleteClick(data.id)}>삭제</button>
+                                    </ButtonCell>
+                                </>
+                            )}    
+                            <td>{data.status}</td>
+                            
+                            {withdrawalToggle && 
+                                <ModalAlert>
+                                    <div>
+                                        <p>알림</p>
+                                        <span>{statusProp === "정상" ? "탈퇴" : "복구"}처리 하시겠습니까?</span>
+                                        {statusProp === "정상" &&
+                                            <input type="text" name="reason" onChange={onChange} value={reason} placeholder="탈퇴 사유" />
+                                        }
 
-                            <td>
-                                <button>수정</button>
-                                { data.status === "탈퇴" ? (
-                                    <button onClick={() => onWithdrawalClick(data)}>복구</button>
-                                ) : (
-                                    <button onClick={() => onWithdrawalClick(data)}>탈퇴</button>
-                                ) }
-                                <button onClick={() => onDeleteClick(data.id)}>삭제</button>
-                            </td>
-
-                            <td>{ data.status }</td>
+                                        <ModalButtonContainer>
+                                            <button onClick={() => onWithdrawalClick(data)}>{ statusProp === "정상" ? "탈퇴" : "복구" }</button>
+                                            <button onClick={() => setWithdrawalToggle(false)}>취소</button>
+                                        </ModalButtonContainer>
+                                    </div>
+                                </ModalAlert>
+                            }
                         </tr>
                     )) }
                 </tbody>
-            </table>
+            </UserTableStyle>
 
             {statusProp === "정상" &&
                 <form onSubmit={onSubmit}>
