@@ -1,4 +1,4 @@
-import { addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -22,6 +22,7 @@ const UserContainer = styled.div`
 
     & p {
         margin: 0;
+        flex: 1;
     }
 `;
 
@@ -158,6 +159,7 @@ const UserList = ({ statusProp, userObj, index }) => {
     const [newPartner, setNewPartner] = useState(userObj.partner);
     const [newEtc, setNewEtc] = useState(userObj.etc);
     const [newRank, setNewRank] = useState(userObj.rank);
+    const [newReason, setNewReason] = useState(userObj.reason);
 
      // Modal 관련 state
     const [withdrawalToggle, setWithdrawalToggle] = useState(false);
@@ -184,6 +186,8 @@ const UserList = ({ statusProp, userObj, index }) => {
             setNewRank(value);
         } else if (name === "reason") {
             setReason(value);
+        } else if (name === "NewReason") {
+            setNewReason(value);
         }
     };
 
@@ -196,6 +200,7 @@ const UserList = ({ statusProp, userObj, index }) => {
             partner: newPartner,
             etc: newEtc,
             rank: newRank,
+            reason: newReason,
         });
 
         setEditing(false);
@@ -296,6 +301,17 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
                             {userObj.status}
                         </p>
+
+                        {userObj.status === "탈퇴" && 
+                            <Input
+                                type="text"
+                                name="NewReason"
+                                value={newReason}
+                                onChange={onChange}
+                                placeholder="탈퇴 사유"
+                                autoComplete='off'
+                            />
+                        }
                         <ButtonCell>
                             <button>수정완료</button>
                             <button onClick={toggleEditing}>취소</button>
@@ -329,6 +345,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <p>{userObj.reason}</p>
                             
                             <ButtonCell>
+                                <button onClick={toggleEditing}>수정</button>
                                 <button onClick={() => setWithdrawalToggle(true)}>복구</button>
                                 <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
                             </ButtonCell>

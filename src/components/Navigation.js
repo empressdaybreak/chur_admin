@@ -77,7 +77,7 @@ const Navigation = ({ userObj }) => {
             <div>
                 <span>CHUR ADMIN@톤베리</span>
                 <Link to="/">Home</Link>
-                <Link to="/itemboard">제안</Link>
+                <Link to="/itemboard">부대원관리</Link>
             </div>
             
             <div>

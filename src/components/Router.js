@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
 import DashBoard from "../routes/DashBoard";
-import ItemBoard from "../routes/ItemBoard";
+import UserListPage from "../routes/UserListPage";
 import Navigation from "./Navigation";
 
 const AppRouter = ({ isLoggedIn, userObj }) => {
@@ -14,11 +14,11 @@ const AppRouter = ({ isLoggedIn, userObj }) => {
                 {isLoggedIn ? (
                     <>
                         <Route exact path="/">
-                            <DashBoard />
+                            <DashBoard userObj={userObj} />
                         </Route>
 
                         <Route exact path="/itemboard">
-                            <ItemBoard userObj={ userObj } />
+                            <UserListPage />
                         </Route>
                     </>
                 ) : (
