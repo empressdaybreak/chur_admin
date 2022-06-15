@@ -50,9 +50,7 @@ const UserListPage = ({ status }) => {
             </div>
 
             {status &&
-                <UserAddForm
-                    userObj={data}
-                />
+                <UserAddForm />
             }
             
         </FlexBox>

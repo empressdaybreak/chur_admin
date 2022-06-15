@@ -1,6 +1,7 @@
 import React from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
+import MinutesPage from "../routes/MinutesPage";
 import ProposalPage from "../routes/ProposalPage";
 import UserListPage from "../routes/UserListPage";
 import Navigation from "./Navigation";
@@ -35,7 +36,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                         </Route>
 
                         <Route exact path="/minutes">
-                            
+                            <MinutesPage userObj={userObj} />
                         </Route>
                     </>
                 ) : (
