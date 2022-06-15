@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { authService } from "../fbase";
 import { useHistory } from "react-router-dom";
@@ -49,47 +49,54 @@ const Header = styled.div`
     }
 `;
 
-const Navigation = ({ userObj }) => {
-    const [name, setName] = useState("");
-
+const Navigation = ({ userObj, refreshUser }) => {
     const history = useHistory();
+    const [name, setName] = useState("");
 
     const onLogOutClick = () => {
         authService.signOut();
         history.push("/");
     }
 
+    const onSubmit = async (event) => {
+        event.preventDefault();
+    
+        if (userObj.displayName !== name) {
+            await updateProfile(authService.currentUser, {
+                displayName: name,
+            })
+            
+            refreshUser();
+        }
+    }
+
     const onChange = (event) => {
         const { target: { value } } = event;
         setName(value);
     }
-
-    const onSubmit = async (event) => {
-        event.preventDefault();
-
-        await updateProfile(authService.currentUser, {
-            displayName: name,
-        })
-    }
-
+    
     return(
         <Header>
             <div>
                 <span>CHUR ADMIN@톤베리</span>
                 <Link to="/">Home</Link>
-                <Link to="/itemboard">부대원관리</Link>
+                <Link to="/useradmin">냥이 관리</Link>
+                <Link to="/withdrawaluseradmin">탈퇴한 냥이</Link>
+                <Link to="/proposal">건의사항</Link>
+                <Link to="/minutes">회의록</Link>
             </div>
             
             <div>
-                <span>{ userObj.displayName } 님</span>
-                <button onClick={onLogOutClick}>로그아웃</button>
-
-                { userObj.displayName === null &&
+                {userObj.displayName === null ? (
                     <form onSubmit={onSubmit}>
                         <input type="text" onChange={onChange} value={name} placeholder="이름" />
                         <input type="submit" value="변경" />
                     </form>
-                }
+                ) : (
+                    <span>{userObj.displayName} 님</span>
+                )}
+            
+                <button onClick={onLogOutClick}>로그아웃</button>
             </div>
         </Header>
     );

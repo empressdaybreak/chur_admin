@@ -68,6 +68,14 @@ const DatePickerBox = styled.div`
     }
 `;
 
+const FormArea = styled.div`
+    border: none;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+
+    padding: 20px 0;
+`;
+
 const UserAddForm = () => {
     // const date = moment().format("YYYY-MM-DD");
 
@@ -110,6 +118,7 @@ const UserAddForm = () => {
             etc: etc,
             rank: rank,
             status: "정상",
+            reason: "",
         };
 
         await addDoc(collection(dbService, "users"), userDataObj);
@@ -121,49 +130,51 @@ const UserAddForm = () => {
 
 
     return (
-        <form onSubmit={onSubmit} style={{ marginTop: "10px" }}>
-            <FlexBox>
-                <p>이름</p>
-                <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
+        <FormArea>
+            <form onSubmit={onSubmit}>
+                <FlexBox>
+                    <p>이름</p>
+                    <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
 
-                
-                <p>가입일</p>
-                <DatePickerBox>
-                    <DatePicker
-                        selected={date}
-                        onChange={(date) => setDate(date)}
-                        locale={ko}
-                        dateFormat="yyyy-MM-dd"
-                    />
-                </DatePickerBox>
-                
-                <p>가입경로</p>
-                <Select name="rootSelect" value={root} onChange={onChange}>
-                    {rootSelect.map((data, index) => (
-                        <option key={index} value={data}>
-                            {data}
-                        </option>
-                    ))}
-                </Select>
+                    
+                    <p>가입일</p>
+                    <DatePickerBox>
+                        <DatePicker
+                            selected={date}
+                            onChange={(date) => setDate(date)}
+                            locale={ko}
+                            dateFormat="yyyy-MM-dd"
+                        />
+                    </DatePickerBox>
+                    
+                    <p>가입경로</p>
+                    <Select name="rootSelect" value={root} onChange={onChange}>
+                        {rootSelect.map((data, index) => (
+                            <option key={index} value={data}>
+                                {data}
+                            </option>
+                        ))}
+                    </Select>
 
-                <p>지인</p>
-                <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
+                    <p>지인</p>
+                    <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
 
-                <p>비고</p>
-                <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' />
+                    <p>비고</p>
+                    <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' />
 
-                <p>계급</p>
-                <Select name="rankSelect" value={rank} onChange={onChange}>
-                    {rankSelect.map((data, index) => (
-                        <option key={index} value={data}>
-                            {data}
-                        </option>
-                    ))}
-                </Select>
+                    <p>계급</p>
+                    <Select name="rankSelect" value={rank} onChange={onChange}>
+                        {rankSelect.map((data, index) => (
+                            <option key={index} value={data}>
+                                {data}
+                            </option>
+                        ))}
+                    </Select>
 
-                <Button>등록</Button>
-            </FlexBox>
-        </form>
+                    <Button>등록</Button>
+                </FlexBox>
+            </form>
+        </FormArea>
     );
 };
 

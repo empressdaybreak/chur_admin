@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { authService } from "../fbase";
 import styled from "styled-components";
@@ -18,7 +18,9 @@ const FlexBox = styled.form`
 
 const Auth = () => {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");    
+    const [password, setPassword] = useState("");
+    const [newAccount, setNewAccount] = useState(false);
+    const [error, setError] = useState("");
 
     const onChange = (event) => {
         const { target: { name, value } } = event;
@@ -33,8 +35,22 @@ const Auth = () => {
     const onSubmit = async (event) => {
         event.preventDefault();
 
-        const data = await signInWithEmailAndPassword(authService, email, password);
-        console.log(data);
+        try {
+            if (newAccount) {
+                const data = await createUserWithEmailAndPassword(authService, email, password);
+                console.log(data);
+            } else {
+                const data = await signInWithEmailAndPassword(authService, email, password);
+                console.log(data);
+            }
+        } catch (error) {
+            setError(error.message);
+            console.log(error);
+        }
+    }
+
+    const toggleAccount = () => {
+        setNewAccount(prev => !prev);
     }
 
     return (
@@ -58,7 +74,12 @@ const Auth = () => {
                     required
                 />
                 
-                <input type="submit" value="로그인" />                
+                <input type="submit" value={newAccount ? "Create Account" : "Sign In"} />
+                {error && <span>{error}</span>}
+
+                <span onClick={toggleAccount}>
+                    {newAccount ? "Sign In" : "Create Account"}
+                </span>
             </FlexBox>
         </div>
     );

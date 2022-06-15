@@ -111,7 +111,7 @@ const Todo = ({ itemObj }) => {
 
     const deleteItem = async (id) => {
         const ok = window.confirm("삭제하시겠습니까?");
-
+        setMenuFlag(false);
         if (ok) {
             await deleteDoc(doc(dbService, "item_board", id));
         }

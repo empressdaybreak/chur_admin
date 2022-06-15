@@ -1,24 +1,41 @@
 import React from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
-import DashBoard from "../routes/DashBoard";
+import ProposalPage from "../routes/ProposalPage";
 import UserListPage from "../routes/UserListPage";
 import Navigation from "./Navigation";
 
-const AppRouter = ({ isLoggedIn, userObj }) => {
+const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
     return (
         <Router>
-            {isLoggedIn && <Navigation userObj={ userObj } /> }
+            {isLoggedIn &&
+                <Navigation
+                    userObj={userObj}
+                    refreshUser={refreshUser}
+                />
+            }
 
             <Switch>
                 {isLoggedIn ? (
                     <>
                         <Route exact path="/">
-                            <DashBoard userObj={userObj} />
+                            
                         </Route>
 
-                        <Route exact path="/itemboard">
-                            <UserListPage />
+                        <Route exact path="/proposal">
+                            <ProposalPage userObj={userObj} />
+                        </Route>
+
+                        <Route exact path="/useradmin">
+                            <UserListPage status={true} />
+                        </Route>
+
+                        <Route exact path="/withdrawaluseradmin">
+                            <UserListPage status={false} />
+                        </Route>
+
+                        <Route exact path="/minutes">
+                            
                         </Route>
                     </>
                 ) : (

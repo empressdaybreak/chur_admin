@@ -16,6 +16,8 @@ const UserContainer = styled.div`
 
     padding: 1rem;
 
+    text-align: center;
+
     &:not(:last-child) {
         margin-bottom: 15px;
     }
@@ -68,6 +70,7 @@ const ModalAlert = styled.div`
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 9999;
 
     & > div {
         width: 300px;
@@ -240,7 +243,6 @@ const UserList = ({ statusProp, userObj, index }) => {
         setEditing((prev) => !prev);
     }
 
-    
     return (
         <>
             {editing ? (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { dbService } from "../fbase";
 import styled from "styled-components";
 import Todo from "../components/Todo";
@@ -91,7 +91,14 @@ const ButtonArea = styled.div`
     }
 `;
 
-const DashBoard = ({ userObj }) => {
+const AlertDesc = styled.p`
+    text-align: center;
+    font-size: 18px;
+
+    padding: 30px 0;
+`;
+
+const ProposalPage = ({ userObj }) => {
     const date = moment().format("YYYY-MM-DD");
     const [newData, setNewData] = useState([]);
     const [agreeData, setAgreeData] = useState([]);
@@ -125,45 +132,45 @@ const DashBoard = ({ userObj }) => {
     }
 
     useEffect(() => {
-        const newQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "new"));
-        const agreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "agree"));
-        const disagreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "disagree"));
-        const holdQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "hold"));
+        const newQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "new"), orderBy("addDay"));
+        const agreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "agree"), orderBy("addDay"));
+        const disagreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "disagree"), orderBy("addDay"));
+        const holdQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "hold"), orderBy("addDay"));
 
         onSnapshot(newQuery, (querySnapshot) => {
-            const userArray = querySnapshot.docs.map(doc => ({
+            const itemArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
-            setNewData(userArray);
+            setNewData(itemArray);
         });
 
         onSnapshot(agreeQuery, (querySnapshot) => {
-            const userArray = querySnapshot.docs.map(doc => ({
+            const itemArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
-            setAgreeData(userArray);
+            setAgreeData(itemArray);
         });
 
         onSnapshot(disagreeQuery, (querySnapshot) => {
-            const userArray = querySnapshot.docs.map(doc => ({
+            const itemArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
-            setDisagreeData(userArray);
+            setDisagreeData(itemArray);
         });
 
         onSnapshot(holdQuery, (querySnapshot) => {
-            const userArray = querySnapshot.docs.map(doc => ({
+            const itemArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
             }));
 
-            setHoldData(userArray);
+            setHoldData(itemArray);
         });
     }, []);
 
@@ -204,6 +211,10 @@ const DashBoard = ({ userObj }) => {
                         key={index}
                     />
                 ))}
+
+                {newData.length === 0 && 
+                    <AlertDesc>의견이 없습니다.</AlertDesc>
+                }
             </TodoList>
 
             <TodoList>
@@ -250,4 +261,4 @@ const DashBoard = ({ userObj }) => {
     );
 };
 
-export default DashBoard;
+export default ProposalPage;
