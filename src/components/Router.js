@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
 import MinutesPage from "../routes/MinutesPage";
@@ -7,6 +7,26 @@ import UserListPage from "../routes/UserListPage";
 import Navigation from "./Navigation";
 
 const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
+    const [isAuth, setIsAuth] = useState(false);
+
+    const authChecked = () => {
+        if (userObj.displayName !== null) {
+            const a = userObj.displayName;
+
+            if (a.includes("@breadcat")) {
+                setIsAuth(true);
+            } else {
+                setIsAuth(false);
+            }
+        } else if (userObj.displayName === null) {
+            setIsAuth(false);
+        }
+    };
+
+    useEffect(() => {
+        authChecked();
+    }, [userObj]);
+
     return (
         <Router>
             {isLoggedIn &&
@@ -19,25 +39,33 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
             <Switch>
                 {isLoggedIn ? (
                     <>
-                        <Route exact path="/">
-                            
-                        </Route>
+                        {isAuth ? (
+                            <>
+                                <Route exact path="/">
+                                    
+                                </Route>
 
-                        <Route exact path="/proposal">
-                            <ProposalPage userObj={userObj} />
-                        </Route>
+                                <Route exact path="/proposal">
+                                    <ProposalPage userObj={userObj} />
+                                </Route>
 
-                        <Route exact path="/useradmin">
-                            <UserListPage status={true} />
-                        </Route>
+                                <Route exact path="/useradmin">
+                                    <UserListPage status={true} />
+                                </Route>
 
-                        <Route exact path="/withdrawaluseradmin">
-                            <UserListPage status={false} />
-                        </Route>
+                                <Route exact path="/withdrawaluseradmin">
+                                    <UserListPage status={false} />
+                                </Route>
 
-                        <Route exact path="/minutes">
-                            <MinutesPage userObj={userObj} />
-                        </Route>
+                                <Route exact path="/minutes">
+                                    <MinutesPage userObj={userObj} />
+                                </Route>
+                            </>
+                        ) : (
+                            <>
+                                <p>인증되지 않은 사용자</p>
+                            </>
+                        )}
                     </>
                 ) : (
                     <Route path="/">

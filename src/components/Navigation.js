@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { authService } from "../fbase";
 import { useHistory } from "react-router-dom";
@@ -61,13 +61,11 @@ const Navigation = ({ userObj, refreshUser }) => {
     const onSubmit = async (event) => {
         event.preventDefault();
     
-        if (userObj.displayName !== name) {
-            await updateProfile(authService.currentUser, {
-                displayName: name,
-            })
-            
-            refreshUser();
-        }
+        await updateProfile(authService.currentUser, {
+            displayName: name,
+        });
+        
+        refreshUser();
     }
 
     const onChange = (event) => {
@@ -93,7 +91,7 @@ const Navigation = ({ userObj, refreshUser }) => {
                         <input type="submit" value="변경" />
                     </form>
                 ) : (
-                    <span>{userObj.displayName} 님</span>
+                    <span>{userObj.displayName.replace('@breadcat', '')} 님</span>
                 )}
             
                 <button onClick={onLogOutClick}>로그아웃</button>
