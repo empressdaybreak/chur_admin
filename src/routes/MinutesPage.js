@@ -1,14 +1,14 @@
-import { addDoc, collection, onSnapshot, query } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query } from "firebase/firestore";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFeatherPointed, faXmark } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 
 const ArticleBox = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-
-    margin: 0 20px;
 `;
 
 const ArticleCard = styled.div`
@@ -22,9 +22,7 @@ const ArticleCard = styled.div`
     
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-
-    white-space: pre-wrap;
+    justify-content: space-between;    
 
     &:not(:last-child) {
         margin-right: 1 0px;
@@ -90,15 +88,38 @@ const ModalAlert = styled.div`
 
             padding: 20px 5px;
         }
+    }
+`;
 
-        & > div:last-child {
-            height: 100%;
+const ContentForm = styled.div`
+    height: calc(700px - 160px);
 
-            border: none;
-            box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
-            border-radius: 5px;
-            padding: 10px;
-        }
+    border: none;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+    padding: 10px;
+
+    white-space: pre-wrap;
+    overflow-y: scroll;
+`;
+
+const InputForm = styled.form`
+    display: flex;
+    flex-direction: column;
+
+    & textarea {
+        resize: none;
+
+        height: calc(700px - 160px);
+
+        border: none;
+        box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+        border-radius: 5px;
+        padding: 10px;
+
+        margin-bottom: 20px;
+
+        overflow-y: scroll;
     }
 `;
 
@@ -117,6 +138,7 @@ const MinutesPage = ({ userObj }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
+        setModalToggle(false);
 
         const itemObj = {
             index: data.length,
@@ -128,6 +150,14 @@ const MinutesPage = ({ userObj }) => {
         await addDoc(collection(dbService, "minutes"), itemObj);
         setTextVal("");
     };
+
+    const onDeleteItem = async (id) => {
+        const ok = window.confirm("삭제하시겠습니까?");
+
+        if (ok) {
+            await deleteDoc(doc(dbService, "minutes", id));
+        }
+    };
     
     const modalNumberSend = (content, addDay) => {        
         setModalData(content);
@@ -135,8 +165,15 @@ const MinutesPage = ({ userObj }) => {
         setModalToggle(true);
     };
 
+    const modalClose = () => {
+        setModalToggle(false);
+        setModalData("");
+        setModalDay("");
+        setTextVal("");
+    }
+
     useEffect(() => {
-        const q = query(collection(dbService, "minutes"));
+        const q = query(collection(dbService, "minutes"), orderBy("addDay", "desc"));
 
         onSnapshot(q, (querySnapshot) => {
             const itemArray = querySnapshot.docs.map(doc => ({
@@ -150,26 +187,33 @@ const MinutesPage = ({ userObj }) => {
 
     return (
         <>
-            <form onSubmit={onSubmit}>
-                <textarea
-                    placeholder="여기에&#13;&#10;입력하세요"
-                    value={textVal}
-                    onChange={handleSetValue}
-                    name="textbox"
-                />
-
-                <button>등록</button>
-            </form>
-
+            <button
+                onClick={() => setModalToggle(true)}
+                style={{
+                    borderRadius: "5px",
+                    color: "#fff",
+                    padding: "5px 10px",
+                    border: "none",
+                    margin: "20px",
+                    backgroundColor: "#14aaf5",
+                    cursor: "pointer"
+                }}
+            >
+                <FontAwesomeIcon icon={faFeatherPointed} />
+                새로쓰기
+            </button>
 
             <ArticleBox>
                 {data.map((data, index) => (
-                    <ArticleCard key={index} onClick={ () => modalNumberSend(data.content, data.addDay) }>
+                    <ArticleCard key={index}>
                         <div>
-                            <p>{data.addDay} 회의록</p>    
-                            <span>{data.writer}</span>
-                        </div>
-                        {/* <p>{data.content}</p> */}                        
+                            <div onClick={ () => modalNumberSend(data.content, data.addDay) } style={{cursor: "pointer"}}>
+                                <span style={{ marginRight: "10px" }}>{data.writer.replace('@breadcat', '')}</span>
+                                <p>{data.addDay} 회의록</p>    
+                            </div>
+
+                            <FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(data.id) } style={{cursor: "pointer"}} />
+                        </div>                                           
                     </ArticleCard>
                 ))}
             </ArticleBox>
@@ -177,14 +221,44 @@ const MinutesPage = ({ userObj }) => {
             {modalToggl &&
                 <ModalAlert>
                     <div>
-                        <div>
-                            <p>{modalDay} 회의록</p>
-                            <p onClick={() => setModalToggle(false)}>닫기</p>
-                        </div>
+                        {modalData === "" ? (
+                            <>
+                                <div>
+                                    <p>{date} 회의록</p>
+                                    <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
+                                </div>
 
-                        <div>
-                            <p>{modalData}</p>
-                        </div>
+                                <InputForm onSubmit={onSubmit}>
+                                    <textarea
+                                        placeholder="회의 내용을 적어주세요."
+                                        value={textVal}
+                                        onChange={handleSetValue}
+                                        name="textbox"
+                                    />
+                                    <button style={{
+                                        borderRadius: "5px",
+                                        color: "#fff",
+                                        padding: "5px 10px",
+                                        border: "none",
+                                        backgroundColor: "#14aaf5",
+                                        cursor: "pointer"
+                                    }}>
+                                        등록
+                                    </button>
+                                </InputForm>
+                            </>
+                        ) : (
+                            <>
+                                <div>
+                                    <p>{modalDay} 회의록</p>
+                                    <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
+                                </div>
+
+                                <ContentForm>
+                                    {modalData}
+                                </ContentForm>
+                            </>
+                        )}
                     </div>
                 </ModalAlert>
             }

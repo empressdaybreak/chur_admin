@@ -28,6 +28,7 @@ const UserContainer = styled.div`
     }
 `;
 
+
 const ActiveStatus = styled.span`
     height: 10px;
     width: 10px;
@@ -248,7 +249,7 @@ const UserList = ({ statusProp, userObj, index }) => {
             {editing ? (
                 <form style={{ marginBottom: "15px" }} onSubmit={ onSubmit }>
                     <UserContainer>
-                        <p>{index}</p>
+                        <p style={{flex: "0.2"}}>{index}</p>
                         <p>
                             <Input
                                 type="text"

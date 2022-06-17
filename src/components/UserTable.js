@@ -1,25 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
-import { dbService } from "../fbase";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import "moment/locale/ko";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { dbService } from "../fbase";
 
-const UserTableStyle = styled.table`
+const UserContainer = styled.tr`
+    height: 75px;
+    border: none;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+
+    padding: 1rem;
+
     text-align: center;
-    width: 100%;
-    border-collapse: collapse;
 
-    & tbody tr {
-        border: 1px solid #dadada;
+    &:not(:last-child) {
+        margin-bottom: 15px;
+    }
 
-        & td {
-            padding: 1rem;
-        }
+    & p {
+        margin: 0;
+        flex: 1;
     }
 `;
 
-const ButtonCell = styled.td`
+
+const ActiveStatus = styled.span`
+    height: 10px;
+    width: 10px;
+
+    border-radius: 10px;
+
+    margin-right: 5px;
+    
+    display: inline-block;
+`;
+
+const ButtonCell = styled.div`
     & button {
         border-radius: 5px;
         color: #fff;
@@ -41,6 +58,7 @@ const ButtonCell = styled.td`
     }
 `;
 
+
 const ModalAlert = styled.div`
     width: 100%;
     height: 100%;
@@ -49,6 +67,7 @@ const ModalAlert = styled.div`
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 9999;
 
     & > div {
         width: 300px;
@@ -130,51 +149,23 @@ const Select = styled.select`
     }
 `;
 
-const Button = styled.button`
-    padding: 10px;
-
-    border: none;
-    border-radius: 5px;
-
-    color: #fff;
-    background-color: skyblue;
-`;
-
-const ActiveStatus = styled.span`
-    height: 10px;
-    width: 10px;
-
-    border-radius: 10px;
-
-    margin-right: 5px;
-    
-    display: inline-block;
-`;
-
-const UserTable = ({ columns, statusProp }) => {
+const UserTable = ({ statusProp, userObj, index }) => {
     const date = moment().format("YYYY-MM-DD");
-    const day = "";
-
-    // 신규 등록 관련 state
-    const [name, setName] = useState("");
-    const [root, setRoot] = useState("부대홍보글(인벤)");
-    const [partner, setPartner] = useState("");
-    const [etc, setEtc] = useState("");
-    const [rank, setRank] = useState("5.아기냥이");
-    const [data, setData] = useState([]);
-    const [reason, setReason] = useState("");
 
     // 수정 관련 state
     const [editing, setEditing] = useState(false);
-    const [newName, setNewName] = useState();
-    const [newRoot, setNewRoot] = useState();
-    const [newPartner, setNewPartner] = useState();
-    const [newEtc, setNewEtc] = useState();
-    const [newRank, setNewRank] = useState();
+    const [newName, setNewName] = useState(userObj.name);
+    const [newRoot, setNewRoot] = useState(userObj.regist_root);
+    const [newPartner, setNewPartner] = useState(userObj.partner);
+    const [newEtc, setNewEtc] = useState(userObj.etc);
+    const [newRank, setNewRank] = useState(userObj.rank);
+    const [newReason, setNewReason] = useState(userObj.reason);
 
-    // Modal 관련 state
+     // Modal 관련 state
     const [withdrawalToggle, setWithdrawalToggle] = useState(false);
-    const [selectData, setSelectData] = useState("");
+    
+    // 탈퇴 사유 관련 state
+    const [reason, setReason] = useState("");
 
     // Select 항목 배열
     const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대"];
@@ -183,19 +174,7 @@ const UserTable = ({ columns, statusProp }) => {
     const onChange = (event) => {
         const { target: { value, name } } = event;
 
-        if (name === "name") {
-            setName(value);
-        } else if (name === "rootSelect") {
-            setRoot(value);
-        } else if (name === "partner") {
-            setPartner(value);
-        } else if (name === "etc") {
-            setEtc(value);
-        } else if (name === "rankSelect") {
-            setRank(value);
-        } else if (name === "reason") {
-            setReason(value);
-        } else if (name === "NewName") {
+        if (name === "NewName") {
             setNewName(value);
         } else if (name === "NewRootSelect") {
             setNewRoot(value);
@@ -205,29 +184,26 @@ const UserTable = ({ columns, statusProp }) => {
             setNewEtc(value);
         } else if (name === "NewRankSelect") {
             setNewRank(value);
+        } else if (name === "reason") {
+            setReason(value);
+        } else if (name === "NewReason") {
+            setNewReason(value);
         }
     };
 
     const onSubmit = async (event) => {
         event.preventDefault();
+        
+        await updateDoc(doc(dbService, "users", userObj.id), {
+            name: newName,
+            regist_root: newRoot,
+            partner: newPartner,
+            etc: newEtc,
+            rank: newRank,
+            reason: newReason,
+        });
 
-        const userDataObj = {
-            name: name,
-            regist_date: date,
-            regist_day: day,
-            regist_root: root,
-            partner: partner,
-            etc: etc,
-            rank: rank,
-            reason: reason,
-            status: "정상",
-        };
-
-        await addDoc(collection(dbService, "users"), userDataObj);
-
-        setName("");
-        setPartner("");
-        setEtc("");
+        setEditing(false);
     };
 
     const onDeleteClick = async (id) => {
@@ -238,185 +214,155 @@ const UserTable = ({ columns, statusProp }) => {
         }
     };
 
-    const onWithdrawalClick = async (data, value) => {
-        setWithdrawalToggle(true);
-        setSelectData(data);
-
-        if (withdrawalToggle === true) {
-            if (reason === "" && value === "정상") {
-                alert("탈퇴 사유를 입력해주세요.");
-                return false;
-            }
-
-            setWithdrawalToggle(false);
-
-            if (value === "정상") {
-                await updateDoc(doc(dbService, "users", data.id), {
-                    status: "탈퇴",
-                    reason: reason,
-                });
-            } else if (value === "탈퇴") {
-                await updateDoc(doc(dbService, "users", data.id), {
-                    status: "정상",
-                    reason: "",
-                });
-            }
-
-            setReason("");
+    const onWithdrawalClick = async (value) => {
+        if (reason === "" && value === "정상") {
+            alert("탈퇴 사유를 입력해주세요.");
+            return false;
         }
+
+        if (value === "정상") {
+            await updateDoc(doc(dbService, "users", userObj.id), {
+                status: "탈퇴",
+                reason: reason,
+            });
+        } else if (value === "탈퇴") {
+            await updateDoc(doc(dbService, "users", userObj.id), {
+                status: "정상",
+                reason: "",
+            });
+        }
+
+        setWithdrawalToggle(false);
+        setReason("");
     };
 
     const toggleEditing = () => {
         setEditing((prev) => !prev);
     }
 
-    useEffect(() => {
-        const q = query(collection(dbService, "users"), where("status", "==", statusProp), orderBy("rank"));
-
-        onSnapshot(q, (querySnapshot) => {
-            const userArray = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-
-            setData(userArray);
-        });
-    }, []);
-
     return (
         <>
-            <UserTableStyle>
-                <thead>
-                    <tr style={{ height: "40px" }}>
-                        {columns.map((column, index) => (
-                            <th key={index} width={column.Width}>
-                                {column.Header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
+            {editing ? (
+                <form onSubmit={ onSubmit }> 
+                    <UserContainer>
+                        <td style={{flex: "0.2"}}>{index}</td>
+                        <td>
+                            <Input
+                                type="text"
+                                name="NewName"
+                                value={newName}
+                                onChange={onChange}
+                                placeholder="이름"
+                                autoComplete='off'
+                            />
+                        </td>
+                        <td>{userObj.regist_date}</td>
+                        <td>{moment(date).diff(moment(userObj.regist_date), "days")}일</td>
+                        <td>
+                            <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
+                                {rootSelect.map((data, index) => (
+                                    <option key={index} value={data}>
+                                        {data}
+                                    </option>
+                                ))}
+                            </Select>
+                        </td>
+                        <td>
+                            <Input
+                                type="text"
+                                name="NewPartner"
+                                value={newPartner}
+                                onChange={onChange}
+                                placeholder="지인"
+                                autoComplete='off'
+                            />
+                        </td>
+                        <td>
+                            <Input
+                                type="text"
+                                name="NewEtc"
+                                value={newEtc}
+                                onChange={onChange}
+                                placeholder="비고"
+                                autoComplete='off'
+                            />
+                        </td>
+                        <td>
+                            <Select name="NewRankSelect" value={newRank} onChange={onChange}>
+                                {rankSelect.map((data, index) => (
+                                    <option key={index} value={data}>
+                                        {data}
+                                    </option>
+                                ))}
+                            </Select>
+                        </td>
+                        <td>
+                            <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
+                            {userObj.status}
+                        </td>
 
-                <tbody>
-                    {data.map((data, index) => (
-                        <tr key={data.id}>
+                        
+                        {userObj.status === "탈퇴" && 
+                            <td>
+                                <Input
+                                    type="text"
+                                    name="NewReason"
+                                    value={newReason}
+                                    onChange={onChange}
+                                    placeholder="탈퇴 사유"
+                                    autoComplete='off'
+                                />
+                            </td>
+                        }
 
-                            {editing ? (
-                                <>
-                                    <td>{index + 1}</td>
-                                    <td>
-                                        <Input
-                                            type="text"
-                                            name="NewName"
-                                            value={data.name}
-                                            onChange={onChange}
-                                            placeholder="이름"
-                                            autoComplete='off' />
-                                    </td>
-                                    <td>{data.regist_date}</td>
-                                    <td>{moment(date).diff(moment(`${data.regist_date}`), "days")}일</td>
-                                    <td>
-                                        <Select name="rootSelect" value={newRoot} onChange={onChange}>
-                                            {rootSelect.map((data, index) => (
-                                                <option key={index} value={data}>
-                                                    {data}
-                                                </option>
-                                            ))}
-                                        </Select>
-                                    </td>
-                                    <td>
-                                        <Input
-                                            type="text"
-                                            name="NewPartner"
-                                            value={data.partner}
-                                            onChange={onChange}
-                                            placeholder="지인"
-                                            autoComplete='off' />
-                                    </td>
-                                    <td>
-                                        <Input
-                                            type="text"
-                                            name="NewEtc"
-                                            value={data.etc}
-                                            onChange={onChange}
-                                            placeholder="비고"
-                                            autoComplete='off' />
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <ActiveStatus style={{ backgroundColor: data.status === "정상" ? "#28a745" : "#dc3545" }} />
-                                        {data.status}
-                                    </td>
-                                    <ButtonCell>
-                                        <button onClick={toggleEditing}>수정</button>
-                                        <button onClick={toggleEditing}>취소</button>
-                                    </ButtonCell>
-                                </>
-                            ) : (
-                                <>
-                                    <td>{index + 1}</td>
-                                    <td>{data.name}</td>
-                                    <td>{data.regist_date}</td>
-                                    <td>{moment(date).diff(moment(`${data.regist_date}`), "days")}일</td>
-                                    <td>{data.regist_root}</td>
-                                    <td>{data.partner}</td>
-                                    <td>{data.etc}</td>
-                                    <td>{data.rank}</td>
-                                
-                                    <td>
-                                        <ActiveStatus style={{ backgroundColor: data.status === "정상" ? "#28a745" : "#dc3545" }} />
-                                        {data.status}
-                                    </td>
-
-                                    {statusProp === "정상" ? (
-                                        <ButtonCell>
-                                            <button onClick={toggleEditing}>수정</button>
-                                            <button onClick={() => onWithdrawalClick(data, statusProp)}>탈퇴</button>
-                                            <button onClick={() => onDeleteClick(data.id)}>삭제</button>
-                                        </ButtonCell>
-                                    ) : (
-                                        <>
-                                            <td>{data.reason}</td>
-                                            
-                                            <ButtonCell>
-                                                <button onClick={() => onWithdrawalClick(data, statusProp)}>복구</button>
-                                                <button onClick={() => onDeleteClick(data.id)}>삭제</button>
-                                            </ButtonCell>
-                                        </>
-                                    )}
-                                </>
-                            )}
-
-                        </tr>
-                    ))}
-                </tbody>
-            </UserTableStyle>
-
-            {statusProp === "정상" &&
-                <form onSubmit={onSubmit} style={{ marginTop: "10px" }}>
-                    <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
-
-                    <Select name="rootSelect" value={root} onChange={onChange}>
-                        {rootSelect.map((data, index) => (
-                            <option key={index} value={data}>
-                                {data}
-                            </option>
-                        ))}
-                    </Select>
-
-                    <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
-                    <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' />
-
-                    <Select name="rankSelect" value={rank} onChange={onChange}>
-                        {rankSelect.map((data, index) => (
-                            <option key={index} value={data}>
-                                {data}
-                            </option>
-                        ))}
-                    </Select>                   
-
-                    <Button>등록</Button>
+                        <td>
+                            <ButtonCell>
+                                <button>수정완료</button>
+                                <button onClick={toggleEditing}>취소</button>
+                            </ButtonCell>
+                        </td>
+                    </UserContainer>
                 </form>
-            }
+            ) : (
+                <UserContainer>
+                    <td>{index}</td>
+                    <td>{userObj.name}</td>
+                    <td>{userObj.regist_date}</td>
+                    <td>{moment(date).diff(moment(userObj.regist_date), "days")}일</td>
+                    <td>{userObj.regist_root}</td>
+                    <td>{userObj.partner}</td>
+                    <td>{userObj.etc}</td>
+                    <td>{userObj.rank}</td>
+                
+                    <td>
+                        <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
+                        {userObj.status}
+                    </td>
+
+                    {statusProp === "정상" ? (
+                        <td>
+                            <ButtonCell>
+                                <button onClick={toggleEditing}>수정</button>
+                                <button onClick={() => setWithdrawalToggle(true)}>탈퇴</button>
+                                <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
+                            </ButtonCell>
+                        </td>
+                    ) : (
+                        <>
+                            <td>{userObj.reason}</td>
+                            
+                            <td>
+                                <ButtonCell>
+                                    <button onClick={toggleEditing}>수정</button>
+                                    <button onClick={() => setWithdrawalToggle(true)}>복구</button>
+                                    <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
+                                </ButtonCell>
+                            </td>
+                        </>
+                    )}
+                </UserContainer>
+            )}
+            <tr style={{ height: "15px" }} />
 
             {/* 버튼 눌렀을 때 나오는 모달 부분 */}
             {withdrawalToggle &&
@@ -429,7 +375,7 @@ const UserTable = ({ columns, statusProp }) => {
                         }
 
                         <ModalButtonContainer>
-                            <button onClick={() => onWithdrawalClick(selectData, statusProp)}>{statusProp === "정상" ? "탈퇴" : "복구"}</button>
+                            <button onClick={() => onWithdrawalClick(statusProp)}>{statusProp === "정상" ? "탈퇴" : "복구"}</button>
                             <button onClick={() => setWithdrawalToggle(false)}>취소</button>
                         </ModalButtonContainer>
                     </div>

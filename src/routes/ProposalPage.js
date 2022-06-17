@@ -5,8 +5,9 @@ import styled from "styled-components";
 import Todo from "../components/Todo";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCat } from "@fortawesome/free-solid-svg-icons";
+import { faCat, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faShieldCat } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const TodoContainer = styled.div`
     display: flex;
@@ -60,7 +61,6 @@ const Input = styled.input`
     border-radius: 5px;
 
     padding: 10px;
-    margin-right: 10px;
 
     &:focus {
         outline: none;
@@ -73,6 +73,9 @@ const FlexBox = styled.div`
 `;
 
 const ButtonArea = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
     & button {
         border-radius: 5px;
         color: #fff;
@@ -132,7 +135,7 @@ const ProposalPage = ({ userObj }) => {
     }
 
     useEffect(() => {
-        const newQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "new"), orderBy("addDay"));
+        const newQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "new"), orderBy("addDay", "desc"));
         const agreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "agree"), orderBy("addDay"));
         const disagreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "disagree"), orderBy("addDay"));
         const holdQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "hold"), orderBy("addDay"));
@@ -197,8 +200,8 @@ const ProposalPage = ({ userObj }) => {
                                 />
 
                                 <ButtonArea>
-                                    <button>추가</button>
-                                    <button onClick={() => setAddTodoFlag(false)}>취소</button>
+                                    <button><FontAwesomeIcon icon={faPaperPlane} /></button>
+                                    <button onClick={() => setAddTodoFlag(false)}><FontAwesomeIcon icon={faXmark} /></button>
                                 </ButtonArea>
                             </FlexBox>
                         </form>

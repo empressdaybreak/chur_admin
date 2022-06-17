@@ -192,12 +192,12 @@ const Todo = ({ itemObj }) => {
                 
                 <FlexBox>
                     <p>{itemObj.addDay}</p>
-                    <p>{itemObj.writer}</p>
+                    <p>{itemObj.writer.replace('@breadcat', '')}</p>
                 </FlexBox>
                 
                 {editing && (
                     <ButtonArea>
-                        <button onClick={() => updateItem(itemObj.id)}>완료</button>
+                        <button onClick={() => updateItem(itemObj.id)}>수정</button>
                         <button onClick={() => { setEditing(false); setNewTodo(itemObj.itemDesc) }}>취소</button>
                     </ButtonArea>
                 )}
