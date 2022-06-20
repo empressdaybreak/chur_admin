@@ -83,7 +83,7 @@ const UserListPage = ({ status }) => {
                 <p>계급</p>
                 <p>상태</p>
                 <p>버튼</p>
-            </UserHeader> */}
+            </UserHeader>
 
             <div>
                 {data.map((user, index) => (
@@ -94,9 +94,9 @@ const UserListPage = ({ status }) => {
                         index={index+1}
                     />
                 ))}
-            </div>
+            </div> */}
 
-            {/* <table style={{ margin: "0 20px" }}>
+            <table style={{ margin: "0 20px" }}>
                 <thead>
                     <TestHeader>
                         <th>번호</th>
@@ -123,7 +123,7 @@ const UserListPage = ({ status }) => {
                         />
                     ))}
                 </tbody>
-            </table> */}
+            </table>
 
             {status &&
                 <UserAddForm />

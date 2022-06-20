@@ -193,6 +193,7 @@ const UserTable = ({ statusProp, userObj, index }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
+        setEditing(false);
         
         await updateDoc(doc(dbService, "users", userObj.id), {
             name: newName,
@@ -202,8 +203,6 @@ const UserTable = ({ statusProp, userObj, index }) => {
             rank: newRank,
             reason: newReason,
         });
-
-        setEditing(false);
     };
 
     const onDeleteClick = async (id) => {
@@ -243,86 +242,84 @@ const UserTable = ({ statusProp, userObj, index }) => {
     return (
         <>
             {editing ? (
-                <form onSubmit={ onSubmit }> 
-                    <UserContainer>
-                        <td style={{flex: "0.2"}}>{index}</td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="NewName"
-                                value={newName}
-                                onChange={onChange}
-                                placeholder="이름"
-                                autoComplete='off'
-                            />
-                        </td>
-                        <td>{userObj.regist_date}</td>
-                        <td>{moment(date).diff(moment(userObj.regist_date), "days")}일</td>
-                        <td>
-                            <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
-                                {rootSelect.map((data, index) => (
-                                    <option key={index} value={data}>
-                                        {data}
-                                    </option>
-                                ))}
-                            </Select>
-                        </td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="NewPartner"
-                                value={newPartner}
-                                onChange={onChange}
-                                placeholder="지인"
-                                autoComplete='off'
-                            />
-                        </td>
-                        <td>
-                            <Input
-                                type="text"
-                                name="NewEtc"
-                                value={newEtc}
-                                onChange={onChange}
-                                placeholder="비고"
-                                autoComplete='off'
-                            />
-                        </td>
-                        <td>
-                            <Select name="NewRankSelect" value={newRank} onChange={onChange}>
-                                {rankSelect.map((data, index) => (
-                                    <option key={index} value={data}>
-                                        {data}
-                                    </option>
-                                ))}
-                            </Select>
-                        </td>
-                        <td>
-                            <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
-                            {userObj.status}
-                        </td>
+                <UserContainer>
+                    <td style={{flex: "0.2"}}>{index}</td>
+                    <td>
+                        <Input
+                            type="text"
+                            name="NewName"
+                            value={newName}
+                            onChange={onChange}
+                            placeholder="이름"
+                            autoComplete='off'
+                        />
+                    </td>
+                    <td>{userObj.regist_date}</td>
+                    <td>{moment(date).diff(moment(userObj.regist_date), "days")}일</td>
+                    <td>
+                        <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
+                            {rootSelect.map((data, index) => (
+                                <option key={index} value={data}>
+                                    {data}
+                                </option>
+                            ))}
+                        </Select>
+                    </td>
+                    <td>
+                        <Input
+                            type="text"
+                            name="NewPartner"
+                            value={newPartner}
+                            onChange={onChange}
+                            placeholder="지인"
+                            autoComplete='off'
+                        />
+                    </td>
+                    <td>
+                        <Input
+                            type="text"
+                            name="NewEtc"
+                            value={newEtc}
+                            onChange={onChange}
+                            placeholder="비고"
+                            autoComplete='off'
+                        />
+                    </td>
+                    <td>
+                        <Select name="NewRankSelect" value={newRank} onChange={onChange}>
+                            {rankSelect.map((data, index) => (
+                                <option key={index} value={data}>
+                                    {data}
+                                </option>
+                            ))}
+                        </Select>
+                    </td>
+                    <td>
+                        <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
+                        {userObj.status}
+                    </td>
 
-                        
-                        {userObj.status === "탈퇴" && 
-                            <td>
-                                <Input
-                                    type="text"
-                                    name="NewReason"
-                                    value={newReason}
-                                    onChange={onChange}
-                                    placeholder="탈퇴 사유"
-                                    autoComplete='off'
-                                />
-                            </td>
-                        }
-
+                    
+                    {userObj.status === "탈퇴" && 
                         <td>
-                            <ButtonCell>
-                                <button>수정완료</button>
-                                <button onClick={toggleEditing}>취소</button>
-                            </ButtonCell>
+                            <Input
+                                type="text"
+                                name="NewReason"
+                                value={newReason}
+                                onChange={onChange}
+                                placeholder="탈퇴 사유"
+                                autoComplete='off'
+                            />
                         </td>
-                    </UserContainer>
-                </form>
+                    }
+
+                    <td>
+                        <ButtonCell>
+                            <button onClick={onSubmit}>수정완료</button>
+                            <button onClick={toggleEditing}>취소</button>
+                        </ButtonCell>
+                    </td>
+                </UserContainer>
             ) : (
                 <UserContainer>
                     <td>{index}</td>
