@@ -6,7 +6,6 @@ import UserAddForm from "../components/UserAddForm";
 import UserList from "../components/UserList";
 import { dbService } from "../fbase";
 import UserCounter from "../components/UserCounter";
-import UserTable from "../components/UserTable";
 
 const FlexBox = styled.div`
     display: flex;
@@ -18,10 +17,12 @@ const FlexBox = styled.div`
 `;
 
 const UserHeader = styled.div`
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; */
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
 
     border: none;
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
@@ -39,15 +40,6 @@ const UserHeader = styled.div`
     & {
         margin-bottom: 0 !important;
     }
-`;
-
-const TestHeader = styled.tr`
-    border: none;
-    box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
-    border-radius: 5px;
-
-    height: 50px;
-    margin-bottom: 20px;
 `;
 
 const UserListPage = ({ status }) => {
@@ -72,7 +64,7 @@ const UserListPage = ({ status }) => {
                 <UserCounter userData={data} />
             }
 
-            {/* <UserHeader>
+            <UserHeader>
                 <p>번호</p>
                 <p>이름</p>
                 <p>가입일자</p>
@@ -82,6 +74,7 @@ const UserListPage = ({ status }) => {
                 <p>비고</p>
                 <p>계급</p>
                 <p>상태</p>
+                <p>탈퇴사유</p>
                 <p>버튼</p>
             </UserHeader>
 
@@ -94,36 +87,7 @@ const UserListPage = ({ status }) => {
                         index={index+1}
                     />
                 ))}
-            </div> */}
-
-            <table style={{ margin: "0 20px" }}>
-                <thead>
-                    <TestHeader>
-                        <th>번호</th>
-                        <th>이름</th>
-                        <th>가입일자</th>
-                        <th>가입일</th>
-                        <th>가입경로</th>
-                        <th>지인</th>
-                        <th>비고</th>
-                        <th>계급</th>
-                        <th>상태</th>
-                        <th>버튼</th>
-                    </TestHeader>
-                </thead>
-
-                <tbody>
-                    <tr style={{ height: "15px" }} />
-                    {data.map((user, index) => (
-                        <UserTable
-                            statusProp={status ? "정상" : "탈퇴"}
-                            userObj={user}
-                            key={user.id}
-                            index={index+1}
-                        />
-                    ))}
-                </tbody>
-            </table>
+            </div>
 
             {status &&
                 <UserAddForm />

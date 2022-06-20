@@ -1,3 +1,5 @@
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import React, { useState } from "react";
@@ -5,10 +7,12 @@ import styled from "styled-components";
 import { dbService } from "../fbase";
 
 const UserContainer = styled.div`
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; */
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
 
     border: none;
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
@@ -153,6 +157,89 @@ const Select = styled.select`
     }
 `;
 
+
+const EtcModalAlert = styled.div`
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+
+    & > div {
+        width: 700px;
+        height: 700px;
+        background: #fff;
+        
+        position: absolute;
+        left: 50%;
+        top: 50%;
+
+        margin-left: -350px;
+        margin-top: -350px;
+        padding: 15px;
+
+        box-sizing: border-box;
+        border-radius: 5px;
+
+        & p {
+            margin: 0;
+        }
+
+        & > div:first-child {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            padding: 20px 5px;
+        }
+    }
+`;
+
+const ContentForm = styled.div`
+    height: calc(700px - 160px);
+
+    border: none;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+    border-radius: 5px;
+    padding: 10px;
+
+    white-space: pre-wrap;
+    overflow-y: scroll;
+`;
+
+const InputForm = styled.form`
+    display: flex;
+    flex-direction: column;
+
+    & textarea {
+        resize: none;
+
+        height: calc(700px - 160px);
+
+        border: none;
+        box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
+        border-radius: 5px;
+        padding: 10px;
+
+        margin-bottom: 20px;
+
+        overflow-y: scroll;
+    }
+`;
+
+const EtcContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+        margin-bottom: 20px;
+    }
+`;
+
+
 const UserList = ({ statusProp, userObj, index }) => {
     const date = moment().format("YYYY-MM-DD");
 
@@ -167,6 +254,8 @@ const UserList = ({ statusProp, userObj, index }) => {
 
      // Modal 관련 state
     const [withdrawalToggle, setWithdrawalToggle] = useState(false);
+    const [etcModalToggle, setEtcModalToggle] = useState(false);
+    const [etcModifyToggle, setEtcModifyToggle] = useState(false);
     
     // 탈퇴 사유 관련 state
     const [reason, setReason] = useState("");
@@ -197,18 +286,26 @@ const UserList = ({ statusProp, userObj, index }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        
+        setEditing(false);
+
         await updateDoc(doc(dbService, "users", userObj.id), {
             name: newName,
             regist_root: newRoot,
-            partner: newPartner,
-            etc: newEtc,
+            partner: newPartner,            
             rank: newRank,
             reason: newReason,
         });
-
-        setEditing(false);
     };
+
+    const onEtcSubmit = async (event) => {
+        event.preventDefault();
+        setEtcModalToggle(false);
+        setEtcModifyToggle(false);
+
+        await updateDoc(doc(dbService, "users", userObj.id), {
+            etc: newEtc,
+        });
+    }
 
     const onDeleteClick = async (id) => {
         const ok = window.confirm("삭제하시겠습니까?");
@@ -242,6 +339,12 @@ const UserList = ({ statusProp, userObj, index }) => {
 
     const toggleEditing = () => {
         setEditing((prev) => !prev);
+    }
+
+    const closeEtcModal = () => {
+        setEtcModalToggle(false);
+        setEtcModifyToggle(false);
+        setNewEtc(userObj.etc);
     }
 
     return (
@@ -282,14 +385,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                             />
                         </p>
                         <p>
-                            <Input
-                                type="text"
-                                name="NewEtc"
-                                value={newEtc}
-                                onChange={onChange}
-                                placeholder="비고"
-                                autoComplete='off'
-                            />
+                            <button onClick={() => setEtcModalToggle(true)}>자세히</button>
                         </p>
                         <p>
                             <Select name="NewRankSelect" value={newRank} onChange={onChange}>
@@ -305,7 +401,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                             {userObj.status}
                         </p>
 
-                        {userObj.status === "탈퇴" && 
+                        {userObj.status === "탈퇴" ? ( 
                             <Input
                                 type="text"
                                 name="NewReason"
@@ -314,7 +410,9 @@ const UserList = ({ statusProp, userObj, index }) => {
                                 placeholder="탈퇴 사유"
                                 autoComplete='off'
                             />
-                        }
+                        ) : (
+                            <p>-</p>
+                        )}
                         <ButtonCell>
                             <button>수정완료</button>
                             <button onClick={toggleEditing}>취소</button>
@@ -329,7 +427,9 @@ const UserList = ({ statusProp, userObj, index }) => {
                     <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
                     <p>{userObj.regist_root}</p>
                     <p>{userObj.partner}</p>
-                    <p>{userObj.etc}</p>
+                    <p>
+                        <button onClick={() => setEtcModalToggle(true)}>자세히</button>
+                    </p>
                     <p>{userObj.rank}</p>
                 
                     <p>
@@ -337,12 +437,16 @@ const UserList = ({ statusProp, userObj, index }) => {
                         {userObj.status}
                     </p>
 
-                    {statusProp === "정상" ? (
-                        <ButtonCell>
-                            <button onClick={toggleEditing}>수정</button>
-                            <button onClick={() => setWithdrawalToggle(true)}>탈퇴</button>
-                            <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
-                        </ButtonCell>
+                        {statusProp === "정상" ? (
+                        <>
+                            <p>-</p>
+                                
+                            <ButtonCell>
+                                <button onClick={toggleEditing}>수정</button>
+                                <button onClick={() => setWithdrawalToggle(true)}>탈퇴</button>
+                                <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
+                            </ButtonCell>
+                        </>
                     ) : (
                         <>
                             <p>{userObj.reason}</p>
@@ -358,7 +462,7 @@ const UserList = ({ statusProp, userObj, index }) => {
             )}
             
 
-            {/* 버튼 눌렀을 때 나오는 모달 부분 */}
+            {/* 탈퇴 사유 관련 Modal */}
             {withdrawalToggle &&
                 <ModalAlert>
                     <div>
@@ -374,6 +478,56 @@ const UserList = ({ statusProp, userObj, index }) => {
                         </ModalButtonContainer>
                     </div>
                 </ModalAlert>
+            }
+
+            {/* 비고 관련 Modal */}
+            {etcModalToggle &&
+                <EtcModalAlert>
+                    <div>
+                        <div>
+                            <p>비고</p>
+                            <FontAwesomeIcon icon={faXmark} onClick={() => closeEtcModal()} style={{ cursor: "pointer" }} />
+                        </div>
+
+                        {etcModifyToggle ? (
+                            <InputForm onSubmit={onEtcSubmit}>
+                                <textarea
+                                    placeholder="특이 사항을 적어주세요."
+                                    value={newEtc}
+                                    onChange={onChange}
+                                    name="NewEtc"
+                                />
+                                <button style={{
+                                    borderRadius: "5px",
+                                    color: "#fff",
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#14aaf5",
+                                    cursor: "pointer"
+                                }}>
+                                    수정완료
+                                </button>
+                            </InputForm>
+                        ) : (
+                            <EtcContainer>
+                                <ContentForm>
+                                    {newEtc}
+                                </ContentForm>
+                                    
+                                <button style={{
+                                    borderRadius: "5px",
+                                    color: "#fff",
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#14aaf5",
+                                    cursor: "pointer"
+                                }} onClick={() => setEtcModifyToggle(true)}>
+                                    수정
+                                </button>
+                            </EtcContainer>
+                        )}
+                    </div>
+                </EtcModalAlert>
             }
         </>
     );
