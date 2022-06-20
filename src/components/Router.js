@@ -9,21 +9,23 @@ import Navigation from "./Navigation";
 const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
     const [isAuth, setIsAuth] = useState(false);
 
-    const authChecked = () => {
-        if (userObj.displayName !== null) {
-            const a = userObj.displayName;
-
-            if (a.includes("@breadcat")) {
-                setIsAuth(true);
-            } else {
-                setIsAuth(false);
-            }
-        } else if (userObj.displayName === null) {
-            setIsAuth(false);
-        }
-    };
-
     useEffect(() => {
+        const authChecked = () => {
+            if (userObj !== null) {
+                if (userObj.displayName !== null) {
+                    const a = userObj.displayName;
+    
+                    if (a.includes("@breadcat")) {
+                        setIsAuth(true);
+                    } else {
+                        setIsAuth(false);
+                    }
+                } else if (userObj.displayName === null) {
+                    setIsAuth(false);
+                } 
+            }
+        };
+
         authChecked();
     }, [userObj]);
 
