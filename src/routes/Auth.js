@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { authService } from "../fbase";
 import styled from "styled-components";
 
@@ -52,6 +52,10 @@ const Auth = () => {
     const toggleAccount = () => {
         setNewAccount(prev => !prev);
     }
+
+    useEffect(() => {
+        console.log(process.env.REACT_APP_FIREBASE_KEY);
+    }, [])
 
     return (
         <div>

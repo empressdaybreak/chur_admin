@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBNEYIVUmyd3lnwJIRcn4lV6xdVOKPw_Uw",
+    apiKey: process.env.REACT_APP_FIREBASE_KEY,
     authDomain: "chur-admin.firebaseapp.com",
     projectId: "chur-admin",
     storageBucket: "chur-admin.appspot.com",
