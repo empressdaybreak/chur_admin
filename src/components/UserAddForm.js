@@ -86,7 +86,7 @@ const UserAddForm = () => {
     const [name, setName] = useState("");
     const [root, setRoot] = useState("부대홍보글(인벤)");
     const [partner, setPartner] = useState("");
-    const [etc, setEtc] = useState("");
+    // const [etc, setEtc] = useState("");
     const [rank, setRank] = useState("5.아기냥이");
     const [date, setDate] = useState(new Date());
 
@@ -103,8 +103,6 @@ const UserAddForm = () => {
             setRoot(value);
         } else if (name === "partner") {
             setPartner(value);
-        } else if (name === "etc") {
-            setEtc(value);
         } else if (name === "rankSelect") {
             setRank(value);
         }
@@ -118,7 +116,7 @@ const UserAddForm = () => {
             regist_date: moment(date).format("YYYY-MM-DD"),
             regist_root: root,
             partner: partner,
-            etc: etc,
+            // etc: etc,
             rank: rank,
             status: "정상",
             reason: "",
@@ -128,7 +126,6 @@ const UserAddForm = () => {
 
         setName("");
         setPartner("");
-        setEtc("");
     };
 
 
@@ -162,8 +159,8 @@ const UserAddForm = () => {
                     <p>지인</p>
                     <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
 
-                    <p>비고</p>
-                    <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' />
+                    {/* <p>비고</p>
+                    <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' /> */}
 
                     <p>계급</p>
                     <Select name="rankSelect" value={rank} onChange={onChange}>

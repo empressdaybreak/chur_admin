@@ -7,10 +7,6 @@ import styled from "styled-components";
 import { dbService } from "../fbase";
 
 const UserContainer = styled.div`
-    /* display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; */
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     align-items: center;
@@ -20,7 +16,9 @@ const UserContainer = styled.div`
     border-radius: 5px;
 
     background-color: #fff;
+    
     color: #000;
+    font-size: 18px;
 
     padding: 1rem;
 
@@ -77,6 +75,7 @@ const ModalAlert = styled.div`
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
+    color: #000;
 
     position: fixed;
     left: 0;
@@ -112,6 +111,13 @@ const ModalAlert = styled.div`
 
         & > span {
             font-size: 18px;
+        }
+
+        & input {
+            border: 1px solid #dadada;
+            border-radius: 5px;
+            padding: 10px;
+            margin-right: 10px;
         }
     }
 `;
@@ -168,6 +174,8 @@ const EtcModalAlert = styled.div`
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
+
+    font-size: 20px;
 
     position: fixed;
     left: 0;

@@ -24,20 +24,17 @@ const Header = styled.div`
     }
 
     & div:first-child > span {
-        font-size: 20px;
-        font-weight: bold;
-
+        font-size: 30px;
         margin-right: 60px;
     }
 
     & div:first-child > a {
-        font-size: 20px;
-        font-weight: bold;
-
+        font-size: 25px;
         margin-right: 20px;
     }
 
     & div:last-child > span {
+        font-size: 25px;
         margin-right: 20px;
     }
 

@@ -16,6 +16,8 @@ const UserCounterBox = styled.div`
     padding: 20px 0;
     
     background: #fff;
+
+    font-size: 20px;
     color: #000;
     
     display: flex;
@@ -25,6 +27,10 @@ const UserCounterBox = styled.div`
 
     & span {
         margin-right: 5px;
+    }
+
+    & div > p:first-child {
+        margin-bottom: 10px;
     }
 `;
 

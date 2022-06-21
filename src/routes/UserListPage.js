@@ -17,10 +17,6 @@ const FlexBox = styled.div`
 `;
 
 const UserHeader = styled.div`
-    /* display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; */
     display: grid;
     grid-template-columns: repeat(11, 1fr);
 
@@ -28,6 +24,8 @@ const UserHeader = styled.div`
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
     border-radius: 5px;
     background-color: #fff;
+
+    font-size: 20px;
     color: #000;
 
     padding: 1rem;
@@ -63,7 +61,10 @@ const UserListPage = ({ status }) => {
     return (
         <FlexBox>
             {status &&
-                <UserCounter userData={data} />
+                <>
+                    <UserCounter userData={data} />
+                    <UserAddForm />
+                </>
             }
 
             <UserHeader>
@@ -90,11 +91,6 @@ const UserListPage = ({ status }) => {
                     />
                 ))}
             </div>
-
-            {status &&
-                <UserAddForm />
-            }
-            
         </FlexBox>
     );
 };

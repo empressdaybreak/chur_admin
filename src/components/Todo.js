@@ -14,6 +14,8 @@ const Card = styled.div`
 
     background-color: #fff;
     color: #000;
+    font-size: 20px;
+    line-height: 1.3;
 
     position: relative;
 
@@ -22,19 +24,8 @@ const Card = styled.div`
     }
 
     & > p {
-        margin: 20px 0;
-    }
-`;
-
-const Input = styled.input`
-    border: 1px solid #dadada;
-    border-radius: 5px;
-
-    padding: 10px;
-    margin-right: 10px;
-
-    &:focus {
-        outline: none;
+        margin: 10px 0;
+        white-space: pre-wrap;
     }
 `;
 
@@ -100,6 +91,21 @@ const ButtonArea = styled.div`
         &:last-child {
             background-color: red;
         }
+    }
+`;
+
+const TextArea = styled.textarea`
+    border: 1px solid #dadada;
+    border-radius: 5px;
+    resize: none;
+
+    width: 100%;
+
+    padding: 10px;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
     }
 `;
 
@@ -193,7 +199,7 @@ const Todo = ({ itemObj }) => {
                     )}
                 </FlexBox>
                 {editing ? (
-                    <Input type="text" name="newTodo" value={newTodo} onChange={onChange} placeholder={itemObj.itemDesc} />
+                    <TextArea name="newTodo" value={newTodo} onChange={onChange} placeholder={itemObj.itemDesc} />
                     ) : (
                         <p>{itemObj.itemDesc}</p>
                     )

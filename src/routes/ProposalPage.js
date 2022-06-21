@@ -33,14 +33,11 @@ const TodoListHeader = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    
-    font-size: 18px;
-    font-weight: bold;
 
     margin-bottom: 20px;
 
     & p {
-        margin: 0;
+        font-size: 25px;
     }
 `;
 
@@ -59,11 +56,15 @@ const Card = styled.div`
     }
 `;
 
-const Input = styled.input`
+const TextArea = styled.textarea`
     border: 1px solid #dadada;
     border-radius: 5px;
+    resize: none;
+
+    width: 100%;
 
     padding: 10px;
+    box-sizing: border-box;
 
     &:focus {
         outline: none;
@@ -194,8 +195,7 @@ const ProposalPage = ({ userObj }) => {
                     <Card>
                         <form onSubmit={onSubmit}>
                             <FlexBox>
-                                <Input
-                                    type="text"
+                                <TextArea
                                     name="todo"
                                     onChange={onChange}
                                     value={inputTodo}
@@ -226,7 +226,7 @@ const ProposalPage = ({ userObj }) => {
             <TodoList>
                 <TodoListHeader>
                     <p>건의사항 가결</p>
-                    <FontAwesomeIcon icon={faShieldCat} />
+                    <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
 
                 {agreeData.map((item, index) => (
@@ -240,7 +240,7 @@ const ProposalPage = ({ userObj }) => {
             <TodoList>
                 <TodoListHeader>
                     <p>건의사항 기각</p>
-                    <FontAwesomeIcon icon={faShieldCat} />
+                    <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
                 {disagreeData.map((item, index) => (
                     <Todo
@@ -253,7 +253,7 @@ const ProposalPage = ({ userObj }) => {
             <TodoList>
                 <TodoListHeader>
                     <p>건의사항 보류</p>
-                    <FontAwesomeIcon icon={faShieldCat} />
+                    <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
 
                 {holdData.map((item, index) => (

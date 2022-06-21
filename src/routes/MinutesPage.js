@@ -9,6 +9,7 @@ import styled from "styled-components";
 const ArticleBox = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    font-size: 20px;
 `;
 
 const ArticleCard = styled.div`
@@ -69,6 +70,8 @@ const ModalAlert = styled.div`
         width: 700px;
         height: 700px;
         background: #fff;
+
+        font-size: 20px;
         
         position: absolute;
         left: 50%;
