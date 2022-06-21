@@ -50,6 +50,8 @@ const ButtonCell = styled.div`
         color: #fff;
         padding: 5px 10px;
         border: none;
+
+        cursor: pointer;
     }
 
     & button:first-child {
@@ -239,6 +241,17 @@ const EtcContainer = styled.div`
     }
 `;
 
+const DetailButton = styled.button`
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+
+    background-color: orange;
+    font-size: 14px;
+
+    cursor: pointer;
+`;
 
 const UserList = ({ statusProp, userObj, index }) => {
     const date = moment().format("YYYY-MM-DD");
@@ -385,7 +398,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                             />
                         </p>
                         <p>
-                            <button onClick={() => setEtcModalToggle(true)}>자세히</button>
+                            <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
                         </p>
                         <p>
                             <Select name="NewRankSelect" value={newRank} onChange={onChange}>
@@ -428,7 +441,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                     <p>{userObj.regist_root}</p>
                     <p>{userObj.partner}</p>
                     <p>
-                        <button onClick={() => setEtcModalToggle(true)}>자세히</button>
+                        <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
                     </p>
                     <p>{userObj.rank}</p>
                 
