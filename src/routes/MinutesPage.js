@@ -16,6 +16,9 @@ const ArticleCard = styled.div`
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
     border-radius: 5px;
 
+    background-color: #fff;
+    color: #000;
+
     padding: 20px;
     margin: 20px;
     box-sizing: border-box;
@@ -55,6 +58,7 @@ const ModalAlert = styled.div`
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
+    color: #000;
 
     position: fixed;
     left: 0;

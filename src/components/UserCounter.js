@@ -15,6 +15,9 @@ const UserCounterBox = styled.div`
 
     padding: 20px 0;
     
+    background: #fff;
+    color: #000;
+    
     display: flex;
     flex-direction: row;
     justify-content: space-around;

@@ -1,19 +1,83 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { authService } from "../fbase";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShieldCat } from "@fortawesome/free-solid-svg-icons";
 
-const FlexBox = styled.form`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+const FlexBox = styled.div`
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 70%);
 
-    max-width: 320px;
-    margin: 60px auto;
+    & form {
+        padding: 30px;
+        width: 700px;
+        box-sizing: border-box;
+        
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
 
-    & > input {
-        margin-bottom: 10px;
+        & div:first-child {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex: 1;
+
+            padding: 10px;
+
+            & p {
+                margin: 10px 0 5px;
+            }
+        }
+
+        & div:last-child {
+            flex: 0.5;
+
+            & svg {
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+            }
+        }
+
+        & input {
+            margin-bottom: 10px;
+            background-color: #202225;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+
+            color: #fff;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+        & button {
+            border: none;
+            border-radius: 5px;
+
+            padding: 10px 5px;
+            margin-top: 20px;
+
+            background-color: skyblue;
+            color: #fff;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
     }
+`;
+
+const AuthContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 `;
 
 const Auth = () => {
@@ -54,34 +118,46 @@ const Auth = () => {
     }
 
     return (
-        <div>
-            <FlexBox onSubmit={onSubmit}>
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={onChange}
-                    required
-                />
+        <AuthContainer>
+            <FlexBox>
+                <form onSubmit={onSubmit}>
+                    <div>
+                        <p>이메일</p>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="이메일"
+                            value={email}
+                            onChange={onChange}
+                            autoComplete="off"
+                            required
+                        />
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={onChange}
-                    required
-                />
-                
-                <input type="submit" value={newAccount ? "Create Account" : "Sign In"} />
-                {error && <span>{error}</span>}
+                        <p>비밀번호</p>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="패스워드"
+                            value={password}
+                            onChange={onChange}
+                            autoComplete="off"
+                            required
+                        />
+                        
+                        <button>{newAccount ? "계정생성" : "로그인"}</button>
+                        {error && <span>{error}</span>}
 
-                {/* <span onClick={toggleAccount}>
-                    {newAccount ? "Sign In" : "Create Account"}
-                </span> */}
+                        {/* <span onClick={toggleAccount}>
+                            {newAccount ? "Sign In" : "Create Account"}
+                        </span> */}
+                    </div>
+
+                    <div>
+                        <FontAwesomeIcon icon={faShieldCat} />
+                    </div>
+                </form>
             </FlexBox>
-        </div>
+        </AuthContainer>
     );
 };
 

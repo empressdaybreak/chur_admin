@@ -12,10 +12,17 @@ const Card = styled.div`
     
     padding: 15px;
 
+    background-color: #fff;
+    color: #000;
+
     position: relative;
 
     &:not(:last-child) {
         margin-bottom: 15px;
+    }
+
+    & > p {
+        margin: 20px 0;
     }
 `;
 
@@ -47,6 +54,7 @@ const FlexBox = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 0;
 
     & > p:last-child {
         padding: 5px;
@@ -67,7 +75,6 @@ const SubMenuContainer = styled.div`
     border-radius: 5px;
 
     & p {
-        margin: 0;
         padding: 10px 50px;
         cursor: pointer;
 
@@ -179,9 +186,11 @@ const Todo = ({ itemObj }) => {
                     <ActiveStatus
                         style={{ backgroundColor: ActiveStatusColor() }}
                     />
-                    <div onClick={toggleMenu} style={{ padding: "10px" }}>
-                        <FontAwesomeIcon icon={faEllipsisV} />
-                    </div>
+                    {!editing && (
+                        <div onClick={toggleMenu} style={{ padding: "10px" }}>
+                            <FontAwesomeIcon icon={faEllipsisV} />
+                        </div>
+                    )}
                 </FlexBox>
                 {editing ? (
                     <Input type="text" name="newTodo" value={newTodo} onChange={onChange} placeholder={itemObj.itemDesc} />

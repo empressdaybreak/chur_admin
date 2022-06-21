@@ -13,10 +13,14 @@ const UserContainer = styled.div`
     justify-content: space-between; */
     display: grid;
     grid-template-columns: repeat(11, 1fr);
-
+    align-items: center;
+    
     border: none;
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
     border-radius: 5px;
+
+    background-color: #fff;
+    color: #000;
 
     padding: 1rem;
 
@@ -174,6 +178,7 @@ const EtcModalAlert = styled.div`
         width: 700px;
         height: 700px;
         background: #fff;
+        color: #000;
         
         position: absolute;
         left: 50%;

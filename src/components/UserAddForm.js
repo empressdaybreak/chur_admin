@@ -73,6 +73,9 @@ const FormArea = styled.div`
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
     border-radius: 5px;
 
+    background-color: #fff;
+    color: #000;
+
     padding: 20px 0;
 `;
 
