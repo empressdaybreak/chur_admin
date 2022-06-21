@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/chur-admin/static/css/main.da8986fb.css",
+    "main.js": "/chur-admin/static/js/main.81fceea4.js",
+    "index.html": "/chur-admin/index.html",
+    "main.da8986fb.css.map": "/chur-admin/static/css/main.da8986fb.css.map",
+    "main.81fceea4.js.map": "/chur-admin/static/js/main.81fceea4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.da8986fb.css",
+    "static/js/main.81fceea4.js"
+  ]
+}
