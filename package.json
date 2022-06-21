@@ -14,6 +14,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "firebase": "^9.8.2",
+    "gh-pages": "^4.0.0",
     "moment": "^2.29.3",
     "react": "^18.1.0",
     "react-datepicker": "^4.8.0",
@@ -51,5 +52,5 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://empressdaybreak.github.io/chur-admin"
+  "homepage": "https://empressdaybreak.github.io/chur_admin"
 }

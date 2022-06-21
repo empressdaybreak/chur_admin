@@ -38,14 +38,14 @@ const Auth = () => {
         try {
             if (newAccount) {
                 const data = await createUserWithEmailAndPassword(authService, email, password);
-                console.log(data);
+                // console.log(data);
             } else {
                 const data = await signInWithEmailAndPassword(authService, email, password);
-                console.log(data);
+                // console.log(data);
             }
         } catch (error) {
             setError(error.message);
-            console.log(error);
+            // console.log(error);
         }
     }
 
@@ -77,9 +77,9 @@ const Auth = () => {
                 <input type="submit" value={newAccount ? "Create Account" : "Sign In"} />
                 {error && <span>{error}</span>}
 
-                <span onClick={toggleAccount}>
+                {/* <span onClick={toggleAccount}>
                     {newAccount ? "Sign In" : "Create Account"}
-                </span>
+                </span> */}
             </FlexBox>
         </div>
     );

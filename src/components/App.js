@@ -33,7 +33,7 @@ function App() {
 
       setInit(true);
 
-      console.log(user);
+      // console.log(user);
     });
   }, []);
 
