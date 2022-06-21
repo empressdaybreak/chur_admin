@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import Auth from "../routes/Auth";
+import Home from "../routes/Home";
 import MinutesPage from "../routes/MinutesPage";
 import ProposalPage from "../routes/ProposalPage";
 import UserListPage from "../routes/UserListPage";
@@ -15,7 +16,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                 if (userObj.displayName !== null) {
                     const a = userObj.displayName;
     
-                    if (a.includes("@breadcat")) {
+                    if (a.includes(process.env.REACT_APP_USERAUTH_TAG)) {
                         setIsAuth(true);
                     } else {
                         setIsAuth(false);
@@ -44,7 +45,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                         {isAuth ? (
                             <>
                                 <Route exact path="/">
-                                    
+                                    <Home />
                                 </Route>
 
                                 <Route exact path="/proposal">
