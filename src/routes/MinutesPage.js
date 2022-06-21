@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
@@ -128,34 +128,83 @@ const InputForm = styled.form`
 
         overflow-y: scroll;
     }
+
+    & button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        background-color: #14aaf5;
+        cursor: pointer;
+    }
+`;
+
+const MinutesContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+        margin-bottom: 20px;
+    }
+
+    & button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        background-color: #14aaf5;
+        cursor: pointer;
+    }
 `;
 
 const MinutesPage = ({ userObj }) => {
     const date = moment().format("YYYY-MM-DD");
     const [textVal, setTextVal] = useState("");
+    const [newTextVal, setNewTextVal] = useState("");
     const [data, setData] = useState([]);
 
     const [modalData, setModalData] = useState("");
     const [modalDay, setModalDay] = useState("");
+    const [modalId, setModalId] = useState("");
     const [modalToggl, setModalToggle] = useState(false);
 
+    const [minutesModifyToggle, setMinutesModifyToggle] = useState(false);
+
     const handleSetValue = (event) => {
-        setTextVal(event.target.value);
+        const { target: { name, value } } = event;
+
+        if (name === "textBox") {
+            setTextVal(value);
+        } else if (name === "newTextBox") {
+            setNewTextVal(value);
+        }
     };
 
     const onSubmit = async (event) => {
+        const { target: { name } } = event;
+
         event.preventDefault();
-        setModalToggle(false);
 
-        const itemObj = {
-            index: data.length,
-            content: textVal,
-            writer: userObj.displayName,
-            addDay: date,
+        if (name === "minutes") {
+            setModalToggle(false);
+
+            const itemObj = {
+                index: data.length,
+                content: textVal,
+                writer: userObj.displayName,
+                addDay: date,
+            }
+
+            await addDoc(collection(dbService, "minutes"), itemObj);
+            setTextVal("");
+        } else if (name === "newMinutes") {
+            setMinutesModifyToggle(false);
+            setModalToggle(false);
+
+            await updateDoc(doc(dbService, "minutes", modalId), {
+                content: newTextVal,
+            });
         }
-
-        await addDoc(collection(dbService, "minutes"), itemObj);
-        setTextVal("");
     };
 
     const onDeleteItem = async (id) => {
@@ -166,16 +215,19 @@ const MinutesPage = ({ userObj }) => {
         }
     };
     
-    const modalNumberSend = (content, addDay) => {        
+    const modalNumberSend = (content, addDay, id) => {        
         setModalData(content);
         setModalDay(addDay);
         setModalToggle(true);
+        setModalId(id);
     };
 
     const modalClose = () => {
         setModalToggle(false);
+        setMinutesModifyToggle(false);
         setModalData("");
         setModalDay("");
+        setModalId("");
         setTextVal("");
     }
 
@@ -214,8 +266,8 @@ const MinutesPage = ({ userObj }) => {
                 {data.map((data, index) => (
                     <ArticleCard key={index}>
                         <div>
-                            <div onClick={ () => modalNumberSend(data.content, data.addDay) } style={{cursor: "pointer"}}>
-                                <span style={{ marginRight: "10px" }}>{data.writer.replace('@breadcat', '')}</span>
+                            <div onClick={ () => modalNumberSend(data.content, data.addDay, data.id) } style={{cursor: "pointer"}}>
+                                <span style={{ marginRight: "10px" }}>{data.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</span>
                                 <p>{data.addDay} 회의록</p>    
                             </div>
 
@@ -235,23 +287,14 @@ const MinutesPage = ({ userObj }) => {
                                     <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
                                 </div>
 
-                                <InputForm onSubmit={onSubmit}>
+                                <InputForm onSubmit={onSubmit} name="minutes">
                                     <textarea
                                         placeholder="회의 내용을 적어주세요."
                                         value={textVal}
                                         onChange={handleSetValue}
-                                        name="textbox"
+                                        name="textBox"
                                     />
-                                    <button style={{
-                                        borderRadius: "5px",
-                                        color: "#fff",
-                                        padding: "5px 10px",
-                                        border: "none",
-                                        backgroundColor: "#14aaf5",
-                                        cursor: "pointer"
-                                    }}>
-                                        등록
-                                    </button>
+                                    <button>등록</button>
                                 </InputForm>
                             </>
                         ) : (
@@ -261,9 +304,32 @@ const MinutesPage = ({ userObj }) => {
                                     <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
                                 </div>
 
-                                <ContentForm>
-                                    {modalData}
-                                </ContentForm>
+                                <MinutesContainer>
+                                    {!minutesModifyToggle ? (
+                                        <>
+                                            <ContentForm>
+                                                {modalData}
+                                            </ContentForm>
+                                
+                                                <button onClick={() => {
+                                                    setMinutesModifyToggle(true);
+                                                    setNewTextVal(modalData);
+                                                }}>수정</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <InputForm onSubmit={onSubmit} name="newMinutes">
+                                                <textarea
+                                                    placeholder={modalData}
+                                                    value={newTextVal}
+                                                    onChange={handleSetValue}
+                                                    name="newTextBox"
+                                                />
+                                                <button>수정완료</button>
+                                            </InputForm>
+                                        </>
+                                    )}
+                                </MinutesContainer>
                             </>
                         )}
                     </div>

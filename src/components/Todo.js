@@ -207,7 +207,7 @@ const Todo = ({ itemObj }) => {
                 
                 <FlexBox>
                     <p>{itemObj.addDay}</p>
-                    <p>{itemObj.writer.replace('@breadcat', '')}</p>
+                    <p>{itemObj.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</p>
                 </FlexBox>
                 
                 {editing && (

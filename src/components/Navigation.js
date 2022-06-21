@@ -24,17 +24,17 @@ const Header = styled.div`
     }
 
     & div:first-child > span {
-        font-size: 30px;
+        font-size: 25px;
         margin-right: 60px;
     }
 
     & div:first-child > a {
-        font-size: 25px;
+        font-size: 20px;
         margin-right: 20px;
     }
 
     & div:last-child > span {
-        font-size: 25px;
+        font-size: 20px;
         margin-right: 20px;
     }
 
@@ -88,7 +88,7 @@ const Navigation = ({ userObj, refreshUser }) => {
                         <input type="submit" value="변경" />
                     </form>
                 ) : (
-                    <span>{userObj.displayName.replace('@breadcat', '')} 님</span>
+                    <span>{userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')} 님</span>
                 )}
             
                 <button onClick={onLogOutClick}>로그아웃</button>

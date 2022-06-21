@@ -243,6 +243,15 @@ const InputForm = styled.form`
 
         overflow-y: scroll;
     }
+
+    & > button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        background-color: #14aaf5;
+        cursor: pointer;
+    }
 `;
 
 const EtcContainer = styled.div`
@@ -251,6 +260,15 @@ const EtcContainer = styled.div`
 
     & > div {
         margin-bottom: 20px;
+    }
+
+    & > button {
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        background-color: #14aaf5;
+        cursor: pointer;
     }
 `;
 
@@ -523,16 +541,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                                     onChange={onChange}
                                     name="NewEtc"
                                 />
-                                <button style={{
-                                    borderRadius: "5px",
-                                    color: "#fff",
-                                    padding: "5px 10px",
-                                    border: "none",
-                                    backgroundColor: "#14aaf5",
-                                    cursor: "pointer"
-                                }}>
-                                    수정완료
-                                </button>
+                                <button>수정완료</button>
                             </InputForm>
                         ) : (
                             <EtcContainer>
@@ -540,14 +549,7 @@ const UserList = ({ statusProp, userObj, index }) => {
                                     {newEtc}
                                 </ContentForm>
                                     
-                                <button style={{
-                                    borderRadius: "5px",
-                                    color: "#fff",
-                                    padding: "5px 10px",
-                                    border: "none",
-                                    backgroundColor: "#14aaf5",
-                                    cursor: "pointer"
-                                }} onClick={() => setEtcModifyToggle(true)}>
+                                <button onClick={() => setEtcModifyToggle(true)}>
                                     수정
                                 </button>
                             </EtcContainer>
