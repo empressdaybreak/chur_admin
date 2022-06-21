@@ -53,10 +53,6 @@ const Auth = () => {
         setNewAccount(prev => !prev);
     }
 
-    useEffect(() => {
-        console.log(process.env.REACT_APP_FIREBASE_KEY);
-    }, [])
-
     return (
         <div>
             <FlexBox onSubmit={onSubmit}>
