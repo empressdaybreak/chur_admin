@@ -1,6 +1,28 @@
+import { faShieldCat } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import styled from "styled-components";
 import { authService } from "../fbase";
 import AppRouter from "./Router";
+
+const SplashScreen = styled.div` 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  height: 100vh;
+
+  & svg {
+    width: 20%;
+    height: 20%;
+  }
+
+  & p {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+`;
 
 function App() {
   const [init, setInit] = useState(false);
@@ -31,7 +53,9 @@ function App() {
         setIsLoggedIn(false);
       }
 
-      setInit(true);
+      setTimeout(() => {
+        setInit(true);  
+      }, 2000);
 
       // console.log(user);
     });
@@ -46,7 +70,10 @@ function App() {
           refreshUser={refreshUser}
         />
       ) : (
-          "로딩중 ..."
+          <SplashScreen>
+            <FontAwesomeIcon icon={ faShieldCat } />
+            <p>로딩중</p>
+          </SplashScreen>
       )}
     </>
   );
