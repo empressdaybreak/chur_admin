@@ -157,6 +157,13 @@ const MinutesContainer = styled.div`
     }
 `;
 
+const AlertDesc = styled.p`
+    text-align: center;
+    font-size: 18px;
+
+    padding: 30px 0;
+`;
+
 const MinutesPage = ({ userObj }) => {
     const date = moment().format("YYYY-MM-DD");
     const [textVal, setTextVal] = useState("");
@@ -272,10 +279,14 @@ const MinutesPage = ({ userObj }) => {
                             </div>
 
                             <FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(data.id) } style={{cursor: "pointer"}} />
-                        </div>                                           
+                        </div>
                     </ArticleCard>
                 ))}
             </ArticleBox>
+
+            {data.length === 0 &&
+                <AlertDesc>기록이 없습니다.</AlertDesc>
+            }
 
             {modalToggl &&
                 <ModalAlert>

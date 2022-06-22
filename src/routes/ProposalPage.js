@@ -235,6 +235,10 @@ const ProposalPage = ({ userObj }) => {
                         key={index}
                     />
                 ))}
+
+                {agreeData.length === 0 && 
+                    <AlertDesc>의견이 없습니다.</AlertDesc>
+                }
             </TodoList>
 
             <TodoList>
@@ -248,6 +252,10 @@ const ProposalPage = ({ userObj }) => {
                         key={index}
                     />
                 ))}
+
+                {disagreeData.length === 0 && 
+                    <AlertDesc>의견이 없습니다.</AlertDesc>
+                }
             </TodoList>
 
             <TodoList>
@@ -262,6 +270,10 @@ const ProposalPage = ({ userObj }) => {
                         key={index}
                     />
                 ))}
+
+                {holdData.length === 0 && 
+                    <AlertDesc>의견이 없습니다.</AlertDesc>
+                }
             </TodoList>
         </TodoContainer>
     );

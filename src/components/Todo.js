@@ -12,10 +12,13 @@ const Card = styled.div`
     
     padding: 15px;
 
-    background-color: #fff;
     color: #000;
     font-size: 20px;
     line-height: 1.3;
+
+    position: relative;
+
+    background-color: #fff;
 
     position: relative;
 
@@ -26,6 +29,18 @@ const Card = styled.div`
     & > p {
         margin: 10px 0;
         white-space: pre-wrap;
+        
+        position: relative;
+    }
+
+    & img {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+
+        width: 100px;
+        opacity: 0.5;
     }
 `;
 
@@ -114,13 +129,14 @@ const Todo = ({ itemObj }) => {
     const [newTodo, setNewTodo] = useState(itemObj.itemDesc);
     const [menuFlag, setMenuFlag] = useState(false);
 
+
     const onChange = (event) => {
         const { target: { name, value } } = event;
 
         if (name === "newTodo") {
             setNewTodo(value);
         }
-    }
+    };
 
     const deleteItem = async (id) => {
         const ok = window.confirm("삭제하시겠습니까?");
@@ -128,7 +144,7 @@ const Todo = ({ itemObj }) => {
         if (ok) {
             await deleteDoc(doc(dbService, "item_board", id));
         }
-    }
+    };
 
     const updateItemStatus = async (id, status) => {
         setMenuFlag(false);
@@ -146,7 +162,7 @@ const Todo = ({ itemObj }) => {
                 itemStatus: "hold",
             });
         }
-    }
+    };
 
     const ActiveStatusColor = () => {
         let color = "";
@@ -162,8 +178,8 @@ const Todo = ({ itemObj }) => {
         } else if (itemObj.itemStatus === "hold") {
             color = "#796eff";
             return color;
-        } 
-    }
+        }
+    };
 
     const updateItem = async (id) => {
         setEditing(false);
@@ -179,11 +195,11 @@ const Todo = ({ itemObj }) => {
                 itemDesc: newTodo,
             });
         }
-    }
+    };
 
     const toggleMenu = () => {
         setMenuFlag((prev) => !prev);
-    }
+    };
 
     return (
         <>
@@ -193,7 +209,7 @@ const Todo = ({ itemObj }) => {
                         style={{ backgroundColor: ActiveStatusColor() }}
                     />
                     {!editing && (
-                        <div onClick={toggleMenu} style={{ padding: "10px" }}>
+                        <div onClick={toggleMenu} style={{ padding: "0 10px", zIndex: "999" }}>
                             <FontAwesomeIcon icon={faEllipsisV} />
                         </div>
                     )}
@@ -227,6 +243,18 @@ const Todo = ({ itemObj }) => {
                         <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
                         <p onClick={() => deleteItem(itemObj.id)}>삭제</p>
                     </SubMenuContainer>
+                }
+
+                {itemObj.itemStatus === "agree" &&
+                    <img src={`${process.env.PUBLIC_URL}/img/agree.png`} alt="가결 이미지" />
+                }
+
+                {itemObj.itemStatus === "disagree" &&
+                    <img src={`${process.env.PUBLIC_URL}/img/disagree.png`} alt="기각 이미지" />
+                }
+
+                {itemObj.itemStatus === "hold" &&
+                    <img src={`${process.env.PUBLIC_URL}/img/hold.png`} alt="보류 이미지" />
                 }
             </Card>
         </>

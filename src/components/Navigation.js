@@ -33,16 +33,23 @@ const Header = styled.div`
         margin-right: 20px;
     }
 
-    & div:last-child > span {
-        font-size: 20px;
-        margin-right: 20px;
-    }
+    & div:last-child {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
-    & button {
-        background-color: orange;
-        border-radius: 5px;
-        color: #fff;
-        padding: 5px 10px;
+        & > span {
+            font-size: 20px;
+            margin-right: 20px;
+        }
+
+        & > p {
+            background-color: orange;
+            border-radius: 5px;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 18px;
+        }
     }
 `;
 
@@ -91,7 +98,7 @@ const Navigation = ({ userObj, refreshUser }) => {
                     <span>{userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')} 님</span>
                 )}
             
-                <button onClick={onLogOutClick}>로그아웃</button>
+                <p onClick={onLogOutClick}>로그아웃</p>
             </div>
         </Header>
     );
