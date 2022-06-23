@@ -59,16 +59,16 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                     <>
                         {isAuth ? (
                             <>
-                                <Route exact path="/">
+                                {/* <Route exact path="/">
                                     <Home />
-                                </Route>
+                                </Route> */}
 
+                                <Route exact path="/">
+                                    <UserListPage status={true} />
+                                </Route>
+                                
                                 <Route exact path="/proposal">
                                     <ProposalPage userObj={userObj} />
-                                </Route>
-
-                                <Route exact path="/useradmin">
-                                    <UserListPage status={true} />
                                 </Route>
 
                                 <Route exact path="/withdrawaluseradmin">
