@@ -51,6 +51,8 @@ const FlexBox = styled.div`
         font-size: 17px;
         color: #fff;
         background-color: skyblue;
+
+        cursor: pointer;
     }
 `;
 
@@ -120,6 +122,7 @@ const UserAddForm = () => {
             rank: rank,
             status: "정상",
             reason: "",
+            out_date: "",
         };
 
         await addDoc(collection(dbService, "users"), userDataObj);
@@ -130,50 +133,48 @@ const UserAddForm = () => {
 
 
     return (
-        <FormArea>
-            <form onSubmit={onSubmit}>
-                <FlexBox>
-                    <p>이름</p>
-                    <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
-                    
-                    <p>가입일</p>
-                    <DatePickerBox>
-                        <DatePicker
-                            selected={date}
-                            onChange={(date) => setDate(date)}
-                            locale={ko}
-                            dateFormat="yyyy-MM-dd"
-                        />
-                    </DatePickerBox>
+        <FormArea>            
+            <FlexBox>
+                <p>이름</p>
+                <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
                 
-                    <p>가입경로</p>
-                    <Select name="rootSelect" value={root} onChange={onChange}>
-                        {rootSelect.map((data, index) => (
-                            <option key={index} value={data}>
-                                {data}
-                            </option>
-                        ))}
-                    </Select>
+                <p>가입일</p>
+                <DatePickerBox>
+                    <DatePicker
+                        selected={date}
+                        onChange={(date) => setDate(date)}
+                        locale={ko}
+                        dateFormat="yyyy-MM-dd"
+                    />
+                </DatePickerBox>
+            
+                <p>가입경로</p>
+                <Select name="rootSelect" value={root} onChange={onChange}>
+                    {rootSelect.map((data, index) => (
+                        <option key={index} value={data}>
+                            {data}
+                        </option>
+                    ))}
+                </Select>
+            
+                <p>지인</p>
+                <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
                 
-                    <p>지인</p>
-                    <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
-                    
 
-                    {/* <p>비고</p>
-                    <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' /> */}
+                {/* <p>비고</p>
+                <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' /> */}
 
-                    <p>계급</p>
-                    <Select name="rankSelect" value={rank} onChange={onChange}>
-                        {rankSelect.map((data, index) => (
-                            <option key={index} value={data}>
-                                {data}
-                            </option>
-                        ))}
-                    </Select>
+                <p>계급</p>
+                <Select name="rankSelect" value={rank} onChange={onChange}>
+                    {rankSelect.map((data, index) => (
+                        <option key={index} value={data}>
+                            {data}
+                        </option>
+                    ))}
+                </Select>
 
-                    <p>등록</p>
-                </FlexBox>
-            </form>
+                <p onClick={onSubmit}>등록</p>
+            </FlexBox>
         </FormArea>
     );
 };

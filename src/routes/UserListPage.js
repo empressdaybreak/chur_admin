@@ -68,6 +68,8 @@ const UserListPage = ({ status }) => {
 
             setData(userArray);
         });
+
+        console.log(status);
     }, []);
 
     return (
@@ -83,7 +85,7 @@ const UserListPage = ({ status }) => {
                 <p>번호</p>
                 <p>이름</p>
                 <p>가입일자</p>
-                <p>가입일</p>
+                <p>{status ? "가입일" : "탈퇴일자"}</p>
                 <p>가입경로</p>
                 <p>지인</p>
                 <p>비고</p>

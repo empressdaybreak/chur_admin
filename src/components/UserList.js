@@ -376,11 +376,13 @@ const UserList = ({ statusProp, userObj, index }) => {
             await updateDoc(doc(dbService, "users", userObj.id), {
                 status: "탈퇴",
                 reason: reason,
+                out_date: date,
             });
         } else if (value === "탈퇴") {
             await updateDoc(doc(dbService, "users", userObj.id), {
                 status: "정상",
                 reason: "",
+                out_date: "",
             });
         }
 
@@ -475,12 +477,16 @@ const UserList = ({ statusProp, userObj, index }) => {
                     <p>{index}</p>
                     <p>{userObj.name}</p>
                     <p>{userObj.regist_date}</p>
-                    <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
+                        
+                    {statusProp === "정상" ? (
+                        <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
+                    ) : (
+                        <p>{userObj.out_date}</p>
+                    )}
+                        
                     <p>{userObj.regist_root}</p>
                     <p>{userObj.partner}</p>
-                    <p>
-                        <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
-                    </p>
+                    <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
                     <p>{userObj.rank}</p>
                 
                     <p>
