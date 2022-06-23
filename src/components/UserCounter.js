@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCat } from "@fortawesome/free-solid-svg-icons";
+import { faCat, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 import { faCrown } from "@fortawesome/free-solid-svg-icons";
 import { faShieldCat } from "@fortawesome/free-solid-svg-icons";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
@@ -37,6 +37,13 @@ const UserCounterBox = styled.div`
 const UserCounter = ({ userData }) => {
     return (
         <UserCounterBox>
+            <div>
+                <p>
+                    <span>전체인원</span>
+                    <FontAwesomeIcon icon={faUserGroup} />
+                </p>
+                <p>{userData.length} 명</p>
+            </div>
             <div>
                 <p>
                     <span>킹냥이</span>

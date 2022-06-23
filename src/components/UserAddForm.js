@@ -93,7 +93,7 @@ const UserAddForm = () => {
     const [date, setDate] = useState(new Date());
 
     // Select 항목 배열
-    const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대"];
+    const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대", "외치기"];
     const rankSelect = ["1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
 
     const onChange = (event) => {

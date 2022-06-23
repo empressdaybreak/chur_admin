@@ -312,7 +312,7 @@ const UserList = ({ statusProp, userObj, index }) => {
     const [reason, setReason] = useState("");
 
     // Select 항목 배열
-    const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대"];
+    const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대", "외치기"];
     const rankSelect = ["1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
 
     const onChange = (event) => {
@@ -403,75 +403,73 @@ const UserList = ({ statusProp, userObj, index }) => {
     return (
         <>
             {editing ? (
-                <form style={{ marginBottom: "15px" }} onSubmit={ onSubmit }>
-                    <UserContainer>
-                        <p style={{flex: "0.2"}}>{index}</p>
-                        <p>
-                            <Input
-                                type="text"
-                                name="NewName"
-                                value={newName}
-                                onChange={onChange}
-                                placeholder="이름"
-                                autoComplete='off'
-                            />
-                        </p>
-                        <p>{userObj.regist_date}</p>
-                        <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
-                        <p>
-                            <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
-                                {rootSelect.map((data, index) => (
-                                    <option key={index} value={data}>
-                                        {data}
-                                    </option>
-                                ))}
-                            </Select>
-                        </p>
-                        <p>
-                            <Input
-                                type="text"
-                                name="NewPartner"
-                                value={newPartner}
-                                onChange={onChange}
-                                placeholder="지인"
-                                autoComplete='off'
-                            />
-                        </p>
-                        <p>
-                            <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
-                        </p>
-                        <p>
-                            <Select name="NewRankSelect" value={newRank} onChange={onChange}>
-                                {rankSelect.map((data, index) => (
-                                    <option key={index} value={data}>
-                                        {data}
-                                    </option>
-                                ))}
-                            </Select>
-                        </p>
-                        <p>
-                            <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
-                            {userObj.status}
-                        </p>
+                <UserContainer>
+                    <p style={{flex: "0.2"}}>{index}</p>
+                    <p>
+                        <Input
+                            type="text"
+                            name="NewName"
+                            value={newName}
+                            onChange={onChange}
+                            placeholder="이름"
+                            autoComplete='off'
+                        />
+                    </p>
+                    <p>{userObj.regist_date}</p>
+                    <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
+                    <p>
+                        <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
+                            {rootSelect.map((data, index) => (
+                                <option key={index} value={data}>
+                                    {data}
+                                </option>
+                            ))}
+                        </Select>
+                    </p>
+                    <p>
+                        <Input
+                            type="text"
+                            name="NewPartner"
+                            value={newPartner}
+                            onChange={onChange}
+                            placeholder="지인"
+                            autoComplete='off'
+                        />
+                    </p>
+                    <p>
+                        <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
+                    </p>
+                    <p>
+                        <Select name="NewRankSelect" value={newRank} onChange={onChange}>
+                            {rankSelect.map((data, index) => (
+                                <option key={index} value={data}>
+                                    {data}
+                                </option>
+                            ))}
+                        </Select>
+                    </p>
+                    <p>
+                        <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
+                        {userObj.status}
+                    </p>
 
-                        {userObj.status === "탈퇴" ? ( 
-                            <Input
-                                type="text"
-                                name="NewReason"
-                                value={newReason}
-                                onChange={onChange}
-                                placeholder="탈퇴 사유"
-                                autoComplete='off'
-                            />
-                        ) : (
-                            <p>-</p>
-                        )}
-                        <ButtonCell>
-                            <p>수정완료</p>
-                            <p onClick={toggleEditing}>취소</p>
-                        </ButtonCell>
-                    </UserContainer>
-                </form>
+                    {userObj.status === "탈퇴" ? ( 
+                        <Input
+                            type="text"
+                            name="NewReason"
+                            value={newReason}
+                            onChange={onChange}
+                            placeholder="탈퇴 사유"
+                            autoComplete='off'
+                        />
+                    ) : (
+                        <p>-</p>
+                    )}
+                    <ButtonCell>
+                        <p onClick={onSubmit}>수정완료</p>
+                        <p onClick={toggleEditing}>취소</p>
+                    </ButtonCell>
+                </UserContainer>
             ) : (
                 <UserContainer>
                     <p>{index}</p>

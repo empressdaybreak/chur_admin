@@ -67,6 +67,8 @@ const FlexBox = styled.div`
         color: #fff;
         border-radius: 5px;
         background-color: #14aaf5;
+
+        z-index: 9999;
     }
 `;
 

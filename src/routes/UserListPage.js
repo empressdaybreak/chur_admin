@@ -68,8 +68,6 @@ const UserListPage = ({ status }) => {
 
             setData(userArray);
         });
-
-        console.log(status);
     }, []);
 
     return (
