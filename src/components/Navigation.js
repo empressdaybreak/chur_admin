@@ -49,7 +49,39 @@ const Header = styled.div`
             color: #fff;
             padding: 5px 10px;
             font-size: 18px;
+
+            cursor: pointer;
         }
+    }
+`;
+
+const Input = styled.input`
+    border: 1px solid #dadada;
+    border-radius: 5px;
+
+    padding: 10px;
+    margin-right: 10px;
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+const InputForm = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    margin-right: 20px;
+
+    & > p {
+        background-color: skyblue;
+        border-radius: 5px;
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 18px;
+
+        cursor: pointer;
     }
 `;
 
@@ -65,11 +97,15 @@ const Navigation = ({ userObj, refreshUser }) => {
     const onSubmit = async (event) => {
         event.preventDefault();
     
-        await updateProfile(authService.currentUser, {
-            displayName: name,
-        });
-        
-        refreshUser();
+        if (name.includes(process.env.REACT_APP_USERAUTH_TAG)) {
+            await updateProfile(authService.currentUser, {
+                displayName: name,
+            });
+            
+            refreshUser();    
+        } else {
+            alert("관리자에게 문의해주세요.");
+        }
     }
 
     const onChange = (event) => {
@@ -90,10 +126,10 @@ const Navigation = ({ userObj, refreshUser }) => {
             
             <div>
                 {userObj.displayName === null ? (
-                    <form onSubmit={onSubmit}>
-                        <input type="text" onChange={onChange} value={name} placeholder="이름" />
-                        <input type="submit" value="변경" />
-                    </form>
+                    <InputForm>
+                        <Input type="text" onChange={onChange} value={name} placeholder="이름" />
+                        <p onClick={onSubmit}>등록</p>
+                    </InputForm>
                 ) : (
                     <span>{userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')} 님</span>
                 )}

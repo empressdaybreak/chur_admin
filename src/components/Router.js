@@ -6,6 +6,21 @@ import MinutesPage from "../routes/MinutesPage";
 import ProposalPage from "../routes/ProposalPage";
 import UserListPage from "../routes/UserListPage";
 import Navigation from "./Navigation";
+import styled from "styled-components";
+
+const AuthScreen = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100vh;
+
+    & p {
+        font-size: 20px;
+    }
+`;
 
 const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
     const [isAuth, setIsAuth] = useState(false);
@@ -65,9 +80,9 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                                 </Route>
                             </>
                         ) : (
-                            <>
-                                <p>인증되지 않은 사용자</p>
-                            </>
+                            <AuthScreen>
+                                <p>인증되지 않은 사용자 입니다.</p>
+                            </AuthScreen>
                         )}
                     </>
                 ) : (
