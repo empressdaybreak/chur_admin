@@ -19,6 +19,7 @@ const FlexBox = styled.div`
 const UserHeader = styled.div`
     display: grid;
     grid-template-columns: repeat(11, 1fr);
+    align-items: center;
 
     border: none;
     box-shadow: 0 2px 10px rgb(0 0 0 / 10%);
@@ -54,9 +55,58 @@ const AlertDesc = styled.div`
     }
 `;
 
+// const Select = styled.select`
+//     border: 1px solid #dadada;
+//     border-radius: 5px;
+
+//     padding: 10px;
+//     margin-right: 10px;
+
+//     &:focus {
+//         outline: none;
+//     }
+// `;
+
 const UserListPage = ({ status }) => {
     const [data, setData] = useState([]);
-   
+    // const [searchText, setSearchText] = useState("");
+    // const rankSelect = ["계급", "1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
+
+    // 이름 검색 기능
+    // const doSearch = async (flag) => {
+    //     const q = query(collection(dbService, "users"), where(flag === "search" ? "name" : "status", "==", flag === "search" ? searchText : "정상"), orderBy("rank"));
+        
+    //     onSnapshot(q, (querySnapshot) => {
+    //         const userArray = querySnapshot.docs.map(doc => ({
+    //             id: doc.id,
+    //             ...doc.data(),
+    //         }));
+
+    //         setData(userArray);
+    //     });
+    // };
+
+    // 계급을 이용한 필터링 검색
+    // const onChange = (event) => {
+    //     const { target: { value } } = event;
+    //     let q = "";
+
+    //     if (value === "전체") {
+    //         q = query(collection(dbService, "users"), where("status", "==", "정상"), orderBy("rank"));
+    //     } else {
+    //         q = query(collection(dbService, "users"), where("rank", "==", value), where("status", "==", "정상"));
+    //     }
+        
+    //     onSnapshot(q, (querySnapshot) => {
+    //         const userArray = querySnapshot.docs.map(doc => ({
+    //             id: doc.id,
+    //             ...doc.data(),
+    //         }));
+
+    //         setData(userArray);
+    //     });
+    // };
+
     useEffect(() => {
         const q = query(collection(dbService, "users"), where("status", "==", status ? "정상" : "탈퇴"), orderBy("rank"));
         
@@ -78,7 +128,7 @@ const UserListPage = ({ status }) => {
                     <UserAddForm />
                 </>
             }
-
+            
             <UserHeader>
                 <p>번호</p>
                 <p>이름</p>
@@ -93,6 +143,18 @@ const UserListPage = ({ status }) => {
                 <p>버튼</p>
             </UserHeader>
 
+            {/* <in put type="text" onChange={onChange} value={searchText} />
+            <p onClick={() => doSearch("search")}>검색</p>
+            <p onClick={() => doSearch("reset")}>초기화</p> */}
+
+            {/* <Select onChange={onChange}>
+                {rankSelect.map((data, index) => (
+                    <option key={index} value={data}>
+                        {data}
+                    </option>
+                ))}
+            </Select> */}
+            
             <div>
                 {data.map((user, index) => (
                     <UserList
