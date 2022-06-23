@@ -47,25 +47,29 @@ const ActiveStatus = styled.span`
 `;
 
 const ButtonCell = styled.div`
-    & button {
+    display: flex;
+    flex-direction: row;
+    font-size: 17px;
+
+    & p {
         border-radius: 5px;
         color: #fff;
-        padding: 5px 10px;
+        padding: 5px;
         border: none;
 
         cursor: pointer;
     }
 
-    & button:first-child {
+    & p:first-child {
         background-color: skyblue;    
     }
 
-    & button:nth-child(2) {
+    & p:nth-child(2) {
         background-color: red;
         margin: 0 5px;
     }
 
-    & button:last-child {
+    & p:last-child {
         background-color: orange;
     }
 `;
@@ -127,20 +131,23 @@ const ModalButtonContainer = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
-    & > button {
+    & > p {
         border: none;
         border-radius: 5px;
 
         color: #fff;
+        font-size: 17px;
 
         padding: 5px 10px;
+        
+        cursor: pointer;
     }
 
-    & > button:first-child {
+    & > p:first-child {
         background-color: red;
     }
 
-    & > button:last-child {
+    & > p:last-child {
         background-color: orange;
     }
 `;
@@ -272,14 +279,14 @@ const EtcContainer = styled.div`
     }
 `;
 
-const DetailButton = styled.button`
+const DetailButton = styled.p`
     border-radius: 5px;
     color: #fff;
-    padding: 5px 10px;
+    padding: 5px;
     border: none;
 
     background-color: orange;
-    font-size: 14px;
+    font-size: 17px;
 
     cursor: pointer;
 `;
@@ -458,8 +465,8 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <p>-</p>
                         )}
                         <ButtonCell>
-                            <button>수정완료</button>
-                            <button onClick={toggleEditing}>취소</button>
+                            <p>수정완료</p>
+                            <p onClick={toggleEditing}>취소</p>
                         </ButtonCell>
                     </UserContainer>
                 </form>
@@ -486,9 +493,9 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <p>-</p>
                                 
                             <ButtonCell>
-                                <button onClick={toggleEditing}>수정</button>
-                                <button onClick={() => setWithdrawalToggle(true)}>탈퇴</button>
-                                <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
+                                <p onClick={toggleEditing}>수정</p>
+                                <p onClick={() => setWithdrawalToggle(true)}>탈퇴</p>
+                                <p onClick={() => onDeleteClick(userObj.id)}>삭제</p>
                             </ButtonCell>
                         </>
                     ) : (
@@ -496,15 +503,15 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <p>{userObj.reason}</p>
                             
                             <ButtonCell>
-                                <button onClick={toggleEditing}>수정</button>
-                                <button onClick={() => setWithdrawalToggle(true)}>복구</button>
-                                <button onClick={() => onDeleteClick(userObj.id)}>삭제</button>
+                                <p onClick={toggleEditing}>수정</p>
+                                <p onClick={() => setWithdrawalToggle(true)}>복구</p>
+                                <p onClick={() => onDeleteClick(userObj.id)}>삭제</p>
                             </ButtonCell>
                         </>
                     )}
                 </UserContainer>
             )}
-            
+
 
             {/* 탈퇴 사유 관련 Modal */}
             {withdrawalToggle &&
@@ -517,8 +524,8 @@ const UserList = ({ statusProp, userObj, index }) => {
                         }
 
                         <ModalButtonContainer>
-                            <button onClick={() => onWithdrawalClick(statusProp)}>{statusProp === "정상" ? "탈퇴" : "복구"}</button>
-                            <button onClick={() => setWithdrawalToggle(false)}>취소</button>
+                            <p onClick={() => onWithdrawalClick(statusProp)}>{statusProp === "정상" ? "탈퇴" : "복구"}</p>
+                            <p onClick={() => setWithdrawalToggle(false)}>취소</p>
                         </ModalButtonContainer>
                     </div>
                 </ModalAlert>

@@ -42,6 +42,18 @@ const UserHeader = styled.div`
     }
 `;
 
+const AlertDesc = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    & > p {
+        font-size: 20px;
+        margin-top: 30px;
+    }
+`;
+
 const UserListPage = ({ status }) => {
     const [data, setData] = useState([]);
    
@@ -90,6 +102,13 @@ const UserListPage = ({ status }) => {
                         index={index+1}
                     />
                 ))}
+
+                {/* 유저가 한명도 없을 때 */}
+                {data.length === 0 && 
+                    <AlertDesc>
+                        <p>등록된 냥이가 없습니다.</p>
+                    </AlertDesc>
+                }
             </div>
         </FlexBox>
     );

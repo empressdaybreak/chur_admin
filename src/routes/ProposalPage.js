@@ -34,6 +34,8 @@ const TodoListHeader = styled.div`
     flex-direction: row;
     justify-content: space-between;
 
+    border-bottom: 3px solid #fff;
+    padding-bottom: 10px;
     margin-bottom: 20px;
 
     & p {

@@ -31,15 +31,6 @@ const Select = styled.select`
     }
 `;
 
-const Button = styled.button`
-    padding: 10px;
-
-    border: none;
-    border-radius: 5px;
-
-    color: #fff;
-    background-color: skyblue;
-`;
 
 const FlexBox = styled.div`
     display: flex;
@@ -49,8 +40,17 @@ const FlexBox = styled.div`
 
     & > p {
         margin: 0 10px 0 25px;
-        
-        font-size: 18px;
+        font-size: 20px;
+    }
+
+    & > p:last-child {
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+
+        font-size: 17px;
+        color: #fff;
+        background-color: skyblue;
     }
 `;
 
@@ -135,7 +135,6 @@ const UserAddForm = () => {
                 <FlexBox>
                     <p>이름</p>
                     <Input type="text" name="name" value={name} onChange={onChange} placeholder="이름" autoComplete='off' />
-
                     
                     <p>가입일</p>
                     <DatePickerBox>
@@ -146,7 +145,7 @@ const UserAddForm = () => {
                             dateFormat="yyyy-MM-dd"
                         />
                     </DatePickerBox>
-                    
+                
                     <p>가입경로</p>
                     <Select name="rootSelect" value={root} onChange={onChange}>
                         {rootSelect.map((data, index) => (
@@ -155,9 +154,10 @@ const UserAddForm = () => {
                             </option>
                         ))}
                     </Select>
-
+                
                     <p>지인</p>
                     <Input type="text" name="partner" value={partner} onChange={onChange} placeholder="지인" autoComplete='off' />
+                    
 
                     {/* <p>비고</p>
                     <Input type="text" name="etc" value={etc} onChange={onChange} placeholder="비고" autoComplete='off' /> */}
@@ -171,7 +171,7 @@ const UserAddForm = () => {
                         ))}
                     </Select>
 
-                    <Button>등록</Button>
+                    <p>등록</p>
                 </FlexBox>
             </form>
         </FormArea>

@@ -253,21 +253,23 @@ const MinutesPage = ({ userObj }) => {
 
     return (
         <>
-            <button
+            <p
                 onClick={() => setModalToggle(true)}
                 style={{
                     borderRadius: "5px",
                     color: "#fff",
-                    padding: "5px 10px",
+                    padding: "10px",
                     border: "none",
                     margin: "20px",
                     backgroundColor: "#14aaf5",
-                    cursor: "pointer"
+                    cursor: "pointer",
+                    fontSize: "18px",
+                    textAlign: "center"
                 }}
             >
                 <FontAwesomeIcon icon={faFeatherPointed} />
                 새로쓰기
-            </button>
+            </p>
 
             <ArticleBox>
                 {data.map((data, index) => (
