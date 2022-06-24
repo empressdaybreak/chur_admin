@@ -9,7 +9,12 @@ const FlexBox = styled.div`
     border-radius: 5px;
     box-shadow: 0 2px 10px rgb(0 0 0 / 70%);
 
-    & form {
+    & p {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    & > div {
         padding: 30px;
         width: 700px;
         box-sizing: border-box;
@@ -26,10 +31,6 @@ const FlexBox = styled.div`
             flex: 1;
 
             padding: 10px;
-
-            & p {
-                margin: 10px 0 5px;
-            }
         }
 
         & div:last-child {
@@ -55,21 +56,22 @@ const FlexBox = styled.div`
                 outline: none;
             }
         }
-
-        & button {
-            border: none;
-            border-radius: 5px;
-
-            padding: 10px 5px;
-            margin-top: 20px;
-
-            background-color: skyblue;
-            color: #fff;
-            font-weight: bold;
-
-            cursor: pointer;
-        }
     }
+`;
+
+const LoginButton = styled.p`
+    border: none;
+    border-radius: 5px;
+
+    padding: 10px 5px;
+    margin-top: 20px;
+
+    background-color: skyblue;
+    color: #fff;
+
+    cursor: pointer;
+
+    text-align: center;
 `;
 
 const AuthContainer = styled.div`
@@ -78,6 +80,15 @@ const AuthContainer = styled.div`
     justify-content: center;
     align-items: center;
     height: 100vh;
+`;
+
+const ErrorAlert = styled.p`
+    white-space: pre-line;
+    line-height: 1.2;
+
+    margin: 0 !important;
+
+    font-size: 17px !important;
 `;
 
 const Auth = () => {
@@ -108,7 +119,7 @@ const Auth = () => {
                 // console.log(data);
             }
         } catch (error) {
-            setError(error.message);
+            setError("정보가 일치하지 않습니다! \n 잘못 입력하신게 아니라면, 관리자에게 문의해주세요!");
             // console.log(error);
         }
     }
@@ -120,7 +131,7 @@ const Auth = () => {
     return (
         <AuthContainer>
             <FlexBox>
-                <form onSubmit={onSubmit}>
+                <div>
                     <div>
                         <p>이메일</p>
                         <input
@@ -144,8 +155,8 @@ const Auth = () => {
                             required
                         />
                         
-                        <button>{newAccount ? "계정생성" : "로그인"}</button>
-                        {error && <span>{error}</span>}
+                        <LoginButton onClick={onSubmit}>{newAccount ? "계정생성" : "로그인"}</LoginButton>
+                        {error && <ErrorAlert>{error}</ErrorAlert>}
 
                         {/* <span onClick={toggleAccount}>
                             {newAccount ? "Sign In" : "Create Account"}
@@ -155,7 +166,7 @@ const Auth = () => {
                     <div>
                         <FontAwesomeIcon icon={faShieldCat} />
                     </div>
-                </form>
+                </div>
             </FlexBox>
         </AuthContainer>
     );
