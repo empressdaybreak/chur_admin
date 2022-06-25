@@ -94,6 +94,7 @@ const ErrorAlert = styled.p`
 const SignInText = styled.p`
     margin: 10px 0 0 !important;
     text-align: center;
+    cursor: pointer;
 `;
 
 const Auth = () => {
