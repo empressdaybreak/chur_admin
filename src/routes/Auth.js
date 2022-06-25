@@ -91,6 +91,11 @@ const ErrorAlert = styled.p`
     font-size: 17px !important;
 `;
 
+const SignInText = styled.p`
+    margin: 10px 0 0 !important;
+    text-align: center;
+`;
+
 const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -154,13 +159,13 @@ const Auth = () => {
                             autoComplete="off"
                             required
                         />
-                        
+
                         <LoginButton onClick={onSubmit}>{newAccount ? "계정생성" : "로그인"}</LoginButton>
                         {error && <ErrorAlert>{error}</ErrorAlert>}
 
-                        {/* <span onClick={toggleAccount}>
-                            {newAccount ? "Sign In" : "Create Account"}
-                        </span> */}
+                        <SignInText onClick={toggleAccount}>
+                            {newAccount ? "로그인하러 가기" : "계정 생성하기"}
+                        </SignInText>
                     </div>
 
                     <div>
