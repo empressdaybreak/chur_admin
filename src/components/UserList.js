@@ -2,9 +2,12 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { dbService } from "../fbase";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { ko } from "date-fns/esm/locale";
 
 const UserContainer = styled.div`
     display: grid;
@@ -311,6 +314,9 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
     // 탈퇴 사유 관련 state
     const [reason, setReason] = useState("");
 
+    // 날짜 관련 statue
+    const [outDate, setOutDate] = useState(userData.out_date);
+
     // Select 항목 배열
     const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대", "외치기"];
     const rankSelect = ["1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
@@ -430,7 +436,21 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
                         autoComplete='off'
                     />
                     <p>{userData.regist_date}</p>
-                    <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
+
+                    {statusProp === "정상" ? (
+                        <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
+                    ) : (
+                        <>
+                            <p>{userData.out_date}</p>
+                            {/* <DatePicker
+                                selected={""}
+                                onChange={(date) => { setOutDate(date); console.log(date); }}
+                                locale={ko}
+                                dateFormat="yyyy-MM-dd"
+                                placeholderText={ userData.out_date}
+                            /> */}
+                        </>
+                    )}
 
                     <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
                         {rootSelect.map((data, index) => (
