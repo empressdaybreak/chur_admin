@@ -81,7 +81,7 @@ const FormArea = styled.div`
     padding: 20px 0;
 `;
 
-const UserAddForm = () => {
+const UserAddForm = ({ userObj }) => {
     // const date = moment().format("YYYY-MM-DD");
 
     // 신규 등록 관련 state
@@ -127,10 +127,17 @@ const UserAddForm = () => {
 
         await addDoc(collection(dbService, "users"), userDataObj);
 
+        await addDoc(collection(dbService, "log"), {
+            date: moment(date).format("YYYY-MM-DD"),
+            name: name,
+            writer: userObj.displayName,
+            type1: "UserLog",
+            type2: "UserAdd",
+        });
+
         setName("");
         setPartner("");
     };
-
 
     return (
         <FormArea>            

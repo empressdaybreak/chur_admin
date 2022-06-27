@@ -64,7 +64,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                                 </Route> */}
 
                                 <Route exact path="/">
-                                    <UserListPage status={true} />
+                                    <UserListPage status={true} userObj={userObj} />
                                 </Route>
                                 
                                 <Route exact path="/proposal">
@@ -77,6 +77,10 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
 
                                 <Route exact path="/minutes">
                                     <MinutesPage userObj={userObj} />
+                                </Route>
+
+                                <Route exact path="/test_page">
+                                    <Home />
                                 </Route>
                             </>
                         ) : (

@@ -67,7 +67,7 @@ const AlertDesc = styled.div`
 //     }
 // `;
 
-const UserListPage = ({ status }) => {
+const UserListPage = ({ status, userObj }) => {
     const [data, setData] = useState([]);
     // const [searchText, setSearchText] = useState("");
     // const rankSelect = ["계급", "1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
@@ -125,7 +125,7 @@ const UserListPage = ({ status }) => {
             {status &&
                 <>
                     <UserCounter userData={data} />
-                    <UserAddForm />
+                    <UserAddForm userObj={userObj}/>
                 </>
             }
             
@@ -159,7 +159,8 @@ const UserListPage = ({ status }) => {
                 {data.map((user, index) => (
                     <UserList
                         statusProp={status ? "정상" : "탈퇴"}
-                        userObj={user}
+                        userData={user}
+                        userObj={userObj}
                         key={user.id}
                         index={index+1}
                     />

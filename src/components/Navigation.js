@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { authService } from "../fbase";
 import { useHistory } from "react-router-dom";
@@ -122,6 +122,9 @@ const Navigation = ({ userObj, refreshUser }) => {
                 <Link to="/withdrawaluseradmin">탈퇴한냥이</Link>
                 <Link to="/proposal">건의사항</Link>
                 <Link to="/minutes">회의록</Link>
+                {userObj.displayName === "토꾸@breadcat" &&
+                    <Link to="/test_page">테스트페이지</Link>
+                }
             </div>
             
             <div>

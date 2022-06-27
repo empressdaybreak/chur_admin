@@ -1,8 +1,8 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { dbService } from "../fbase";
 
@@ -291,17 +291,17 @@ const DetailButton = styled.p`
     cursor: pointer;
 `;
 
-const UserList = ({ statusProp, userObj, index }) => {
+const UserList = ({ statusProp, userData, userObj, index }) => {
     const date = moment().format("YYYY-MM-DD");
 
     // 수정 관련 state
     const [editing, setEditing] = useState(false);
-    const [newName, setNewName] = useState(userObj.name);
-    const [newRoot, setNewRoot] = useState(userObj.regist_root);
-    const [newPartner, setNewPartner] = useState(userObj.partner);
-    const [newEtc, setNewEtc] = useState(userObj.etc);
-    const [newRank, setNewRank] = useState(userObj.rank);
-    const [newReason, setNewReason] = useState(userObj.reason);
+    const [newName, setNewName] = useState(userData.name);
+    const [newRoot, setNewRoot] = useState(userData.regist_root);
+    const [newPartner, setNewPartner] = useState(userData.partner);
+    const [newEtc, setNewEtc] = useState(userData.etc);
+    const [newRank, setNewRank] = useState(userData.rank);
+    const [newReason, setNewReason] = useState(userData.reason);
 
      // Modal 관련 state
     const [withdrawalToggle, setWithdrawalToggle] = useState(false);
@@ -339,7 +339,15 @@ const UserList = ({ statusProp, userObj, index }) => {
         event.preventDefault();
         setEditing(false);
 
-        await updateDoc(doc(dbService, "users", userObj.id), {
+        await addDoc(collection(dbService, "log"), {
+            date: date,
+            name: newName,
+            writer: userObj.displayName,
+            type1: "UserLog",
+            type2: "UserModify",
+        });
+
+        await updateDoc(doc(dbService, "users", userData.id), {
             name: newName,
             regist_root: newRoot,
             partner: newPartner,            
@@ -353,7 +361,7 @@ const UserList = ({ statusProp, userObj, index }) => {
         setEtcModalToggle(false);
         setEtcModifyToggle(false);
 
-        await updateDoc(doc(dbService, "users", userObj.id), {
+        await updateDoc(doc(dbService, "users", userData.id), {
             etc: newEtc,
         });
     }
@@ -362,6 +370,14 @@ const UserList = ({ statusProp, userObj, index }) => {
         const ok = window.confirm("삭제하시겠습니까?");
 
         if (ok) {
+            await addDoc(collection(dbService, "log"), {
+                date: date,
+                name: "",
+                writer: userObj.displayName,
+                type1: "UserLog",
+                type2: "UserDelete",
+            });
+
             await deleteDoc(doc(dbService, "users", id));
         }
     };
@@ -373,13 +389,13 @@ const UserList = ({ statusProp, userObj, index }) => {
         }
 
         if (value === "정상") {
-            await updateDoc(doc(dbService, "users", userObj.id), {
+            await updateDoc(doc(dbService, "users", userData.id), {
                 status: "탈퇴",
                 reason: reason,
                 out_date: date,
             });
         } else if (value === "탈퇴") {
-            await updateDoc(doc(dbService, "users", userObj.id), {
+            await updateDoc(doc(dbService, "users", userData.id), {
                 status: "정상",
                 reason: "",
                 out_date: "",
@@ -392,68 +408,61 @@ const UserList = ({ statusProp, userObj, index }) => {
 
     const toggleEditing = () => {
         setEditing((prev) => !prev);
-    }
+    };
 
     const closeEtcModal = () => {
         setEtcModalToggle(false);
         setEtcModifyToggle(false);
-        setNewEtc(userObj.etc);
-    }
+        setNewEtc(userData.etc);
+    };
 
     return (
         <>
             {editing ? (
                 <UserContainer>
                     <p style={{flex: "0.2"}}>{index}</p>
+                    <Input
+                        type="text"
+                        name="NewName"
+                        value={newName}
+                        onChange={onChange}
+                        placeholder="이름"
+                        autoComplete='off'
+                    />
+                    <p>{userData.regist_date}</p>
+                    <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
+
+                    <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
+                        {rootSelect.map((data, index) => (
+                            <option key={index} value={data}>
+                                {data}
+                            </option>
+                        ))}
+                    </Select>
+
+                    <Input
+                        type="text"
+                        name="NewPartner"
+                        value={newPartner}
+                        onChange={onChange}
+                        placeholder="지인"
+                        autoComplete='off'
+                    />
+                    <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
+                    
+                    <Select name="NewRankSelect" value={newRank} onChange={onChange}>
+                        {rankSelect.map((data, index) => (
+                            <option key={index} value={data}>
+                                {data}
+                            </option>
+                        ))}
+                    </Select>
                     <p>
-                        <Input
-                            type="text"
-                            name="NewName"
-                            value={newName}
-                            onChange={onChange}
-                            placeholder="이름"
-                            autoComplete='off'
-                        />
-                    </p>
-                    <p>{userObj.regist_date}</p>
-                    <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
-                    <p>
-                        <Select name="NewRootSelect" value={newRoot} onChange={onChange}>
-                            {rootSelect.map((data, index) => (
-                                <option key={index} value={data}>
-                                    {data}
-                                </option>
-                            ))}
-                        </Select>
-                    </p>
-                    <p>
-                        <Input
-                            type="text"
-                            name="NewPartner"
-                            value={newPartner}
-                            onChange={onChange}
-                            placeholder="지인"
-                            autoComplete='off'
-                        />
-                    </p>
-                    <p>
-                        <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
-                    </p>
-                    <p>
-                        <Select name="NewRankSelect" value={newRank} onChange={onChange}>
-                            {rankSelect.map((data, index) => (
-                                <option key={index} value={data}>
-                                    {data}
-                                </option>
-                            ))}
-                        </Select>
-                    </p>
-                    <p>
-                        <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
-                        {userObj.status}
+                        <ActiveStatus style={{ backgroundColor: userData.status === "정상" ? "#28a745" : "#dc3545" }} />
+                        {userData.status}
                     </p>
 
-                    {userObj.status === "탈퇴" ? ( 
+                    {userData.status === "탈퇴" ? ( 
                         <Input
                             type="text"
                             name="NewReason"
@@ -473,23 +482,23 @@ const UserList = ({ statusProp, userObj, index }) => {
             ) : (
                 <UserContainer>
                     <p>{index}</p>
-                    <p>{userObj.name}</p>
-                    <p>{userObj.regist_date}</p>
+                    <p>{userData.name}</p>
+                    <p>{userData.regist_date}</p>
                         
                     {statusProp === "정상" ? (
-                        <p>{moment(date).diff(moment(userObj.regist_date), "days")}일</p>
+                        <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
                     ) : (
-                        <p>{userObj.out_date}</p>
+                        <p>{userData.out_date}</p>
                     )}
                         
-                    <p>{userObj.regist_root}</p>
-                    <p>{userObj.partner}</p>
+                    <p>{userData.regist_root}</p>
+                    <p>{userData.partner}</p>
                     <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
-                    <p>{userObj.rank}</p>
+                    <p>{userData.rank}</p>
                 
                     <p>
-                        <ActiveStatus style={{ backgroundColor: userObj.status === "정상" ? "#28a745" : "#dc3545" }} />
-                        {userObj.status}
+                        <ActiveStatus style={{ backgroundColor: userData.status === "정상" ? "#28a745" : "#dc3545" }} />
+                        {userData.status}
                     </p>
 
                         {statusProp === "정상" ? (
@@ -499,17 +508,17 @@ const UserList = ({ statusProp, userObj, index }) => {
                             <ButtonCell>
                                 <p onClick={toggleEditing}>수정</p>
                                 <p onClick={() => setWithdrawalToggle(true)}>탈퇴</p>
-                                <p onClick={() => onDeleteClick(userObj.id)}>삭제</p>
+                                <p onClick={() => onDeleteClick(userData.id)}>삭제</p>
                             </ButtonCell>
                         </>
                     ) : (
                         <>
-                            <p>{userObj.reason}</p>
+                            <p>{userData.reason}</p>
                             
                             <ButtonCell>
                                 <p onClick={toggleEditing}>수정</p>
                                 <p onClick={() => setWithdrawalToggle(true)}>복구</p>
-                                <p onClick={() => onDeleteClick(userObj.id)}>삭제</p>
+                                <p onClick={() => onDeleteClick(userData.id)}>삭제</p>
                             </ButtonCell>
                         </>
                     )}
