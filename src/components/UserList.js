@@ -235,7 +235,7 @@ const ContentForm = styled.div`
     overflow-y: scroll;
 `;
 
-const InputForm = styled.form`
+const InputFormContainer = styled.div`
     display: flex;
     flex-direction: column;
 
@@ -254,12 +254,13 @@ const InputForm = styled.form`
         overflow-y: scroll;
     }
 
-    & > button {
+    & p {
         border-radius: 5px;
         color: #fff;
         padding: 5px 10px;
         border: none;
         background-color: #14aaf5;
+        text-align: center;
         cursor: pointer;
     }
 `;
@@ -272,12 +273,13 @@ const EtcContainer = styled.div`
         margin-bottom: 20px;
     }
 
-    & > button {
+    & > p {
         border-radius: 5px;
         color: #fff;
         padding: 5px 10px;
         border: none;
         background-color: #14aaf5;
+        text-align: center;
         cursor: pointer;
     }
 `;
@@ -294,7 +296,21 @@ const DetailButton = styled.p`
     cursor: pointer;
 `;
 
-const UserList = ({ statusProp, userData, userObj, index }) => {
+const DatePickerBox = styled.div`
+    & input {
+        border: 1px solid #dadada;
+        border-radius: 5px;
+
+        padding: 10px;
+        margin-right: 10px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+`;
+
+const UserList = ({ statusProp, userData, index }) => {
     // 날짜 계산을 위한 오늘 날짜
     const date = moment().format("YYYY-MM-DD");
 
@@ -427,23 +443,28 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
 
                     {statusProp === "정상" ? (
                         <>
-                            <DatePicker
-                                selected={registDate}
-                                onChange={(date) => setRegistDate(date)}
-                                locale={ko}
-                                dateFormat="yyyy-MM-dd"
-                            />
+                            <DatePickerBox>
+                                <DatePicker
+                                    selected={registDate}
+                                    onChange={(date) => setRegistDate(date)}
+                                    locale={ko}
+                                    dateFormat="yyyy-MM-dd"
+                                />
+                            </DatePickerBox>
                             <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
                         </>
                     ) : (
+                        
                         <>
                             <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
-                            <DatePicker
-                                selected={outDate}
-                                onChange={(date) => setOutDate(date)}
-                                locale={ko}
-                                dateFormat="yyyy-MM-dd"
-                            />
+                            <DatePickerBox>
+                                <DatePicker
+                                    selected={outDate}
+                                    onChange={(date) => setOutDate(date)}
+                                    locale={ko}
+                                    dateFormat="yyyy-MM-dd"
+                                />
+                            </DatePickerBox>
                         </>
                     )}
 
@@ -569,24 +590,24 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
                         </div>
 
                         {etcModifyToggle ? (
-                            <InputForm onSubmit={onEtcSubmit}>
+                            <InputFormContainer>
                                 <textarea
                                     placeholder="특이 사항을 적어주세요."
                                     value={newEtc}
                                     onChange={onChange}
                                     name="NewEtc"
                                 />
-                                <button>수정완료</button>
-                            </InputForm>
+                                <p onClick={onEtcSubmit}>수정완료</p>
+                            </InputFormContainer>
                         ) : (
                             <EtcContainer>
                                 <ContentForm>
                                     {newEtc}
                                 </ContentForm>
                                     
-                                <button onClick={() => setEtcModifyToggle(true)}>
+                                <p onClick={() => setEtcModifyToggle(true)}>
                                     수정
-                                </button>
+                                </p>
                             </EtcContainer>
                         )}
                     </div>
