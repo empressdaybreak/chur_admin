@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { dbService } from "../fbase";
+import moment from "moment";
 
 const Card = styled.div`    
     margin: 20px;
@@ -38,6 +39,7 @@ const Log = ({ type }) => {
             const logArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
+                date: doc.data().date.toDate(),
             }));
 
             setData(logArray);
@@ -51,10 +53,12 @@ const Log = ({ type }) => {
 
                     
                     <p>
-                        [{log.date}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 유저 "{log.name}" 님을
+                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 유저 "{log.name}" 님을
                         {log.type2 === "UserAdd" && "추가 하였습니다."}
                         {log.type2 === "UserModify" && "수정 하였습니다."}
                         {log.type2 === "UserDelete" && "삭제 하였습니다."}
+                        {log.type2 === "UserOut" && "탈퇴 처리 하였습니다."}
+                        {log.type2 === "UserIn" && "복구 처리 하였습니다."}
                     </p>
                 </div>
             ))}

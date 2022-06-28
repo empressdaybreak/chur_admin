@@ -114,8 +114,9 @@ const UserListPage = ({ status, userObj }) => {
             const userArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
+                regist_date: doc.data().regist_date.toDate(),
+                out_date: doc.data().out_date.toDate(),
             }));
-
             setData(userArray);
         });
     }, []);

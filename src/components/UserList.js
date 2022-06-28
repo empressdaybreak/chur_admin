@@ -2,7 +2,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { dbService } from "../fbase";
 import DatePicker from "react-datepicker";
@@ -295,6 +295,7 @@ const DetailButton = styled.p`
 `;
 
 const UserList = ({ statusProp, userData, userObj, index }) => {
+    // 날짜 계산을 위한 오늘 날짜
     const date = moment().format("YYYY-MM-DD");
 
     // 수정 관련 state
@@ -316,6 +317,7 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
 
     // 날짜 관련 statue
     const [outDate, setOutDate] = useState(userData.out_date);
+    const [registDate, setRegistDate] = useState(userData.regist_date);
 
     // Select 항목 배열
     const rootSelect = ["부대홍보글(인벤)", "부대홍보글(공홈)", "지인초대", "외치기"];
@@ -345,20 +347,14 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
         event.preventDefault();
         setEditing(false);
 
-        await addDoc(collection(dbService, "log"), {
-            date: date,
-            name: newName,
-            writer: userObj.displayName,
-            type1: "UserLog",
-            type2: "UserModify",
-        });
-
         await updateDoc(doc(dbService, "users", userData.id), {
             name: newName,
             regist_root: newRoot,
             partner: newPartner,            
             rank: newRank,
             reason: newReason,
+            regist_date: registDate,
+            out_date: outDate,
         });
     };
 
@@ -376,14 +372,6 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
         const ok = window.confirm("삭제하시겠습니까?");
 
         if (ok) {
-            await addDoc(collection(dbService, "log"), {
-                date: date,
-                name: "",
-                writer: userObj.displayName,
-                type1: "UserLog",
-                type2: "UserDelete",
-            });
-
             await deleteDoc(doc(dbService, "users", id));
         }
     };
@@ -398,13 +386,13 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
             await updateDoc(doc(dbService, "users", userData.id), {
                 status: "탈퇴",
                 reason: reason,
-                out_date: date,
+                out_date: new Date(),
             });
         } else if (value === "탈퇴") {
             await updateDoc(doc(dbService, "users", userData.id), {
                 status: "정상",
                 reason: "",
-                out_date: "",
+                out_date: new Date(),
             });
         }
 
@@ -435,20 +423,27 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
                         placeholder="이름"
                         autoComplete='off'
                     />
-                    <p>{userData.regist_date}</p>
+                    
 
                     {statusProp === "정상" ? (
-                        <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
-                    ) : (
                         <>
-                            <p>{userData.out_date}</p>
-                            {/* <DatePicker
-                                selected={""}
-                                onChange={(date) => { setOutDate(date); console.log(date); }}
+                            <DatePicker
+                                selected={registDate}
+                                onChange={(date) => setRegistDate(date)}
                                 locale={ko}
                                 dateFormat="yyyy-MM-dd"
-                                placeholderText={ userData.out_date}
-                            /> */}
+                            />
+                            <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
+                        </>
+                    ) : (
+                        <>
+                            <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
+                            <DatePicker
+                                selected={outDate}
+                                onChange={(date) => setOutDate(date)}
+                                locale={ko}
+                                dateFormat="yyyy-MM-dd"
+                            />
                         </>
                     )}
 
@@ -503,12 +498,12 @@ const UserList = ({ statusProp, userData, userObj, index }) => {
                 <UserContainer>
                     <p>{index}</p>
                     <p>{userData.name}</p>
-                    <p>{userData.regist_date}</p>
+                    <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
                         
                     {statusProp === "정상" ? (
                         <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
                     ) : (
-                        <p>{userData.out_date}</p>
+                        <p>{moment(userData.out_date).format("YYYY-MM-DD")}</p>
                     )}
                         
                     <p>{userData.regist_root}</p>

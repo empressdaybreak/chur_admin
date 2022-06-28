@@ -5,7 +5,6 @@ import { dbService } from "../fbase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
-import moment from "moment";
 
 const Input = styled.input`
     border: 1px solid #dadada;
@@ -115,25 +114,16 @@ const UserAddForm = ({ userObj }) => {
 
         const userDataObj = {
             name: name,
-            regist_date: moment(date).format("YYYY-MM-DD"),
+            regist_date: date,
             regist_root: root,
             partner: partner,
-            // etc: etc,
             rank: rank,
             status: "정상",
             reason: "",
-            out_date: "",
+            out_date: date,
         };
 
         await addDoc(collection(dbService, "users"), userDataObj);
-
-        await addDoc(collection(dbService, "log"), {
-            date: moment(date).format("YYYY-MM-DD"),
-            name: name,
-            writer: userObj.displayName,
-            type1: "UserLog",
-            type2: "UserAdd",
-        });
 
         setName("");
         setPartner("");
