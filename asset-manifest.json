@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/chur_admin/static/css/main.25a41f47.css",
-    "main.js": "/chur_admin/static/js/main.822a15fe.js",
+    "main.js": "/chur_admin/static/js/main.5a640a56.js",
     "index.html": "/chur_admin/index.html",
     "main.25a41f47.css.map": "/chur_admin/static/css/main.25a41f47.css.map",
-    "main.822a15fe.js.map": "/chur_admin/static/js/main.822a15fe.js.map"
+    "main.5a640a56.js.map": "/chur_admin/static/js/main.5a640a56.js.map"
   },
   "entrypoints": [
     "static/css/main.25a41f47.css",
-    "static/js/main.822a15fe.js"
+    "static/js/main.5a640a56.js"
   ]
 }
