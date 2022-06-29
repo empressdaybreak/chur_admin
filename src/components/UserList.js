@@ -522,7 +522,7 @@ const UserList = ({ statusProp, userData, index }) => {
                     <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
                         
                     {statusProp === "정상" ? (
-                        <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
+                        <p>{moment(date).diff(moment(userData.regist_date), "days")+1 }일</p>
                     ) : (
                         <p>{moment(userData.out_date).format("YYYY-MM-DD")}</p>
                     )}

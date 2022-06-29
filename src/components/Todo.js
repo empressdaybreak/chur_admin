@@ -1,5 +1,5 @@
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import { arrayUnion, deleteDoc, doc, FieldValue, updateDoc } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { dbService } from "../fbase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -72,6 +72,22 @@ const FlexBox = styled.div`
     }
 `;
 
+const VoteBox = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 0;
+
+    & > p {
+        padding: 5px;
+        margin-right: 5px;
+        color: #fff;
+        border-radius: 5px;
+
+        z-index: 9999;
+    }
+`;
+
 const SubMenuContainer = styled.div`
     position: absolute;
     right: 0;
@@ -126,11 +142,12 @@ const TextArea = styled.textarea`
     }
 `;
 
-const Todo = ({ itemObj }) => {    
+const Todo = ({ itemObj, userObj }) => {    
     const [editing, setEditing] = useState(false);
     const [newTodo, setNewTodo] = useState(itemObj.itemDesc);
     const [menuFlag, setMenuFlag] = useState(false);
 
+    const [isVote, setIsVote] = useState(false);
 
     const onChange = (event) => {
         const { target: { name, value } } = event;
@@ -152,13 +169,47 @@ const Todo = ({ itemObj }) => {
         setMenuFlag(false);
 
         if (status === "agree") {
-            await updateDoc(doc(dbService, "item_board", id), {
-                itemStatus: "agree",
-            });
+            if (Object.keys(itemObj.vote).length !== 0) {
+                // await updateDoc(doc(dbService, "item_board", id), {
+                //     vote: [
+                //         ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "agree", color: "#25e8c8" },
+                //     ],
+                // })
+
+                // if (Object.keys(itemObj.vote).length >= 1 && itemObj.vote.some(item => item.vote === "agree")) {
+                //     await updateDoc(doc(dbService, "item_board", id), {
+                //         itemStatus: "agree",
+                //     }); 
+                // }
+                
+                console.log(itemObj.vote.some(item => item.vote === "agree"));
+            } else if (Object.keys(itemObj.vote).length == 0) {
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "agree", color: "#25e8c8" },
+                    ],
+                });
+            };
         } else if (status === "disagree") {
-            await updateDoc(doc(dbService, "item_board", id), {
-                itemStatus: "disagree",
-            });
+            if (Object.keys(itemObj.vote).length != 0) {
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "disagree", color: "#ff5263"  },
+                    ],
+                })
+
+                if (Object.keys(itemObj.vote).length >= 1) {
+                    await updateDoc(doc(dbService, "item_board", id), {
+                        itemStatus: "disagree",
+                    }); 
+                }
+            } else if (Object.keys(itemObj.vote).length == 0) {
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "disagree", color: "#ff5263" },
+                    ],
+                });
+            };         
         } else if (status === "hold") {
             await updateDoc(doc(dbService, "item_board", id), {
                 itemStatus: "hold",
@@ -201,8 +252,17 @@ const Todo = ({ itemObj }) => {
 
     const toggleMenu = () => {
         setMenuFlag((prev) => !prev);
-    };
 
+        if (Object.keys(itemObj.vote).length != 0) {
+            const result = itemObj.vote.some(item => item.name === userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''));
+            if (result) {
+                setIsVote(true);
+            } else {
+                setIsVote(false);
+            }
+        }
+    };
+    
     return (
         <>
             <Card>
@@ -227,6 +287,23 @@ const Todo = ({ itemObj }) => {
                     <p>{itemObj.addDay}</p>
                     <p>{itemObj.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</p>
                 </FlexBox>
+
+                {itemObj.vote !== undefined &&
+                    Object.keys(itemObj.vote).length != 0 &&
+                    <VoteBox>
+                        {itemObj.vote.map((data, index) => (
+                            data.vote === "agree" ? (
+                                <p key={index} style={{ backgroundColor: data.color }}>
+                                    {data.name}
+                                </p>
+                            ) : (
+                                <p key={index} style={{ backgroundColor: data.color }}>
+                                    {data.name}
+                                </p>
+                            )
+                        ))}
+                    </VoteBox>
+                }
                 
                 {editing && (
                     <ButtonArea>
@@ -238,12 +315,30 @@ const Todo = ({ itemObj }) => {
                 {menuFlag && 
                     <SubMenuContainer>
                         {itemObj.itemStatus === "new" &&
-                            <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>
+                            <>
+                                <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>
+                        
+                                {Object.keys(itemObj.vote).length != 0 ? (
+                                    <>
+                                        {!itemObj.vote.some(item => item.name == userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')) && 
+                                            <>
+                                                <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
+                                                <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
+                                            </>
+                                        }
+                                    </>
+                                    ) : (
+                                    <>
+                                        <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
+                                        <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
+                                    </>
+                                    )
+                                }
+                            </>
                         }
-                        <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
-                        <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
-                        <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
+
                         <p onClick={() => deleteItem(itemObj.id)}>삭제</p>
+                        <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
                     </SubMenuContainer>
                 }
 

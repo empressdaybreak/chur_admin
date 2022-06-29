@@ -126,6 +126,7 @@ const ProposalPage = ({ userObj }) => {
             itemDesc: inputTodo,
             writer: userObj.displayName,
             addDay: date,
+            vote: {},
         };        
 
         await addDoc(collection(dbService, "item_board"), itemObj);
@@ -217,6 +218,7 @@ const ProposalPage = ({ userObj }) => {
                     <Todo
                         itemObj={item}
                         key={index}
+                        userObj={userObj}
                     />
                 ))}
 
@@ -235,6 +237,7 @@ const ProposalPage = ({ userObj }) => {
                     <Todo
                         itemObj={item}
                         key={index}
+                        userObj={userObj}
                     />
                 ))}
 
@@ -252,6 +255,7 @@ const ProposalPage = ({ userObj }) => {
                     <Todo
                         itemObj={item}
                         key={index}
+                        userObj={userObj}
                     />
                 ))}
 
@@ -270,6 +274,7 @@ const ProposalPage = ({ userObj }) => {
                     <Todo
                         itemObj={item}
                         key={index}
+                        userObj={userObj}
                     />
                 ))}
 
