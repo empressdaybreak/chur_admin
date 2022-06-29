@@ -126,7 +126,7 @@ const ProposalPage = ({ userObj }) => {
             itemDesc: inputTodo,
             writer: userObj.displayName,
             addDay: date,
-            vote: {},
+            vote: {},            
         };        
 
         await addDoc(collection(dbService, "item_board"), itemObj);

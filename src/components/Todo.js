@@ -1,5 +1,5 @@
-import { arrayUnion, deleteDoc, doc, FieldValue, updateDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { dbService } from "../fbase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -109,12 +109,16 @@ const SubMenuContainer = styled.div`
 `;
 
 const ButtonArea = styled.div`
-    & button {
+    display: flex;
+    flex-direction: row;
+
+    & p {
         border-radius: 5px;
         color: #fff;
         padding: 5px 10px;
         border: none;
         margin-top: 10px;
+        cursor: pointer;
 
         &:first-child {
             background-color: skyblue;    
@@ -147,8 +151,6 @@ const Todo = ({ itemObj, userObj }) => {
     const [newTodo, setNewTodo] = useState(itemObj.itemDesc);
     const [menuFlag, setMenuFlag] = useState(false);
 
-    const [isVote, setIsVote] = useState(false);
-
     const onChange = (event) => {
         const { target: { name, value } } = event;
 
@@ -170,20 +172,20 @@ const Todo = ({ itemObj, userObj }) => {
 
         if (status === "agree") {
             if (Object.keys(itemObj.vote).length !== 0) {
-                // await updateDoc(doc(dbService, "item_board", id), {
-                //     vote: [
-                //         ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "agree", color: "#25e8c8" },
-                //     ],
-                // })
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "agree", color: "#25e8c8" },
+                    ],
+                })
 
-                // if (Object.keys(itemObj.vote).length >= 1 && itemObj.vote.some(item => item.vote === "agree")) {
-                //     await updateDoc(doc(dbService, "item_board", id), {
-                //         itemStatus: "agree",
-                //     }); 
-                // }
-                
-                console.log(itemObj.vote.some(item => item.vote === "agree"));
-            } else if (Object.keys(itemObj.vote).length == 0) {
+                // agree(동의) 수가 3명 이상이 되면 "가결" 으로 업데이트 됨
+                let result = itemObj.vote.filter(item => item['vote'] === "agree");
+                if (result.length >= 2) {
+                    await updateDoc(doc(dbService, "item_board", id), {
+                        itemStatus: "agree",
+                    }); 
+                }
+            } else if (Object.keys(itemObj.vote).length === 0) {
                 await updateDoc(doc(dbService, "item_board", id), {
                     vote: [
                         { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "agree", color: "#25e8c8" },
@@ -191,19 +193,21 @@ const Todo = ({ itemObj, userObj }) => {
                 });
             };
         } else if (status === "disagree") {
-            if (Object.keys(itemObj.vote).length != 0) {
+            if (Object.keys(itemObj.vote).length !== 0) {
                 await updateDoc(doc(dbService, "item_board", id), {
                     vote: [
                         ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "disagree", color: "#ff5263"  },
                     ],
                 })
 
-                if (Object.keys(itemObj.vote).length >= 1) {
+                // disagree(비동의) 수가 3명 이상이 되면 "기각" 으로 업데이트 됨
+                let result = itemObj.vote.filter(item => item['vote'] === "disagree");
+                if (result.length >= 2) {
                     await updateDoc(doc(dbService, "item_board", id), {
                         itemStatus: "disagree",
                     }); 
                 }
-            } else if (Object.keys(itemObj.vote).length == 0) {
+            } else if (Object.keys(itemObj.vote).length === 0) {
                 await updateDoc(doc(dbService, "item_board", id), {
                     vote: [
                         { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "disagree", color: "#ff5263" },
@@ -211,13 +215,43 @@ const Todo = ({ itemObj, userObj }) => {
                 });
             };         
         } else if (status === "hold") {
-            await updateDoc(doc(dbService, "item_board", id), {
-                itemStatus: "hold",
-            });
+            if (Object.keys(itemObj.vote).length !== 0) {
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        ...itemObj.vote, { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "hold", color: "#796eff"  },
+                    ],
+                })
+
+                // hold(보류) 수가 3명 이상이 되면 "보류" 으로 업데이트 됨
+                let result = itemObj.vote.filter(item => item['vote'] === "hold");
+                if (result.length >= 2) {
+                    await updateDoc(doc(dbService, "item_board", id), {
+                        itemStatus: "hold",
+                    }); 
+                }
+            } else if (Object.keys(itemObj.vote).length === 0) {
+                await updateDoc(doc(dbService, "item_board", id), {
+                    vote: [
+                        { name: userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''), vote: "hold", color: "#796eff" },
+                    ],
+                });
+            };
         }
     };
 
-    const ActiveStatusColor = () => {
+    const voteCancel = async (id) => {
+        setMenuFlag(false);
+
+        const voteObj = itemObj.vote;
+        const idx = voteObj.findIndex((item) => item.name === userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''));
+        voteObj.splice(idx, 1);
+        
+        await updateDoc(doc(dbService, "item_board", id), {
+            vote: voteObj,
+        });
+    }
+
+    const activeStatusColor = () => {
         let color = "";
         if (itemObj.itemStatus === "new") {
             color = "#dadada";
@@ -252,15 +286,6 @@ const Todo = ({ itemObj, userObj }) => {
 
     const toggleMenu = () => {
         setMenuFlag((prev) => !prev);
-
-        if (Object.keys(itemObj.vote).length != 0) {
-            const result = itemObj.vote.some(item => item.name === userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, ''));
-            if (result) {
-                setIsVote(true);
-            } else {
-                setIsVote(false);
-            }
-        }
     };
     
     return (
@@ -268,7 +293,7 @@ const Todo = ({ itemObj, userObj }) => {
             <Card>
                 <FlexBox>
                     <ActiveStatus
-                        style={{ backgroundColor: ActiveStatusColor() }}
+                        style={{ backgroundColor: activeStatusColor() }}
                     />
                     {!editing && (
                         <div onClick={toggleMenu} style={{ padding: "0 10px", zIndex: "999" }}>
@@ -289,7 +314,7 @@ const Todo = ({ itemObj, userObj }) => {
                 </FlexBox>
 
                 {itemObj.vote !== undefined &&
-                    Object.keys(itemObj.vote).length != 0 &&
+                    Object.keys(itemObj.vote).length !== 0 &&
                     <VoteBox>
                         {itemObj.vote.map((data, index) => (
                             data.vote === "agree" ? (
@@ -307,8 +332,8 @@ const Todo = ({ itemObj, userObj }) => {
                 
                 {editing && (
                     <ButtonArea>
-                        <button onClick={() => updateItem(itemObj.id)}>수정</button>
-                        <button onClick={() => { setEditing(false); setNewTodo(itemObj.itemDesc) }}>취소</button>
+                        <p onClick={() => updateItem(itemObj.id)}>수정</p>
+                        <p onClick={() => { setEditing(false); setNewTodo(itemObj.itemDesc) }}>취소</p>
                     </ButtonArea>
                 )}
 
@@ -316,29 +341,29 @@ const Todo = ({ itemObj, userObj }) => {
                     <SubMenuContainer>
                         {itemObj.itemStatus === "new" &&
                             <>
-                                <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>
-                        
-                                {Object.keys(itemObj.vote).length != 0 ? (
-                                    <>
-                                        {!itemObj.vote.some(item => item.name == userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')) && 
-                                            <>
-                                                <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
-                                                <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
-                                            </>
-                                        }
-                                    </>
+                                <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>    
+                                
+                                {Object.keys(itemObj.vote).length !== 0 ? (
+                                    !itemObj.vote.some(item => item.name === userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')) ? (
+                                        <>
+                                            <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
+                                            <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
+                                            <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
+                                        </>
                                     ) : (
+                                        <p onClick={() => voteCancel(itemObj.id)}>투표취소</p>
+                                    )
+                                ) : (
                                     <>
                                         <p onClick={() => updateItemStatus(itemObj.id, "agree")}>가결</p>
                                         <p onClick={() => updateItemStatus(itemObj.id, "disagree")}>기각</p>
+                                        <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
                                     </>
-                                    )
-                                }
+                                )}
                             </>
                         }
 
                         <p onClick={() => deleteItem(itemObj.id)}>삭제</p>
-                        <p onClick={() => updateItemStatus(itemObj.id, "hold")}>보류</p>
                     </SubMenuContainer>
                 }
 
