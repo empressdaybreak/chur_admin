@@ -141,6 +141,13 @@ const ProposalPage = ({ userObj }) => {
         };        
 
         await addDoc(collection(dbService, "item_board"), itemObj);
+        await addDoc(collection(dbService, "logs"), {
+            date: new Date(),
+            name: "",
+            type: "ProposalAdd",
+            writer: userObj.displayName,
+        });
+
         setInputTodo("");
     }
 

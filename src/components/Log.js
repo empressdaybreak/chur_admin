@@ -29,6 +29,18 @@ const Card = styled.div`
     }
 `;
 
+const ListHeader = styled.div`
+    border-bottom: 3px solid #fff;
+    padding-bottom: 10px;
+    margin: 20px;
+
+    text-align: center;
+
+    & p {
+        font-size: 25px;
+    }
+`;
+
 const Log = () => {
     const [data, setData] = useState([]);
 
@@ -47,24 +59,31 @@ const Log = () => {
     }, []);
 
     return (
-        <Card>
-            {data.map((log, index) => (
-                <div key={index}>
-                    <p>
-                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 "{log.name}" 님
-                        {log.type === "UserAdd" && "을 등록 하였습니다."}
-                        {log.type === "UserModify" && "의 정보를 수정 하였습니다."}
-                        {log.type === "UserDelete" && "을 삭제 하였습니다."}
-                        {log.type === "UserOut" && "을 탈퇴 처리 하였습니다."}
-                        {log.type === "UserIn" && "을 복구 처리 하였습니다."}
-                    </p>
-                </div>
-            ))}
+        <div>
+            <ListHeader>
+                <p>활동 내역</p>
+            </ListHeader>
 
-            {data.length === 0 &&
-                <p style={{ textAlign: "center" }}>활동내역이 없습니다.</p>
-            }
-        </Card>
+            <Card>
+                {data.map((log, index) => (
+                    <div key={index}>
+                        <p>
+                            [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이
+                            {log.type === "UserAdd" && `${log.name} 님을 등록 하였습니다.`}
+                            {log.type === "UserModify" && `${log.name} 의 정보를 수정 하였습니다.`}
+                            {log.type === "UserDelete" && `${log.name} 을 삭제 하였습니다.`}
+                            {log.type === "UserOut" && `${log.name} 을 탈퇴 처리 하였습니다.`}
+                            {log.type === "UserIn" && `${log.name} 을 복구 처리 하였습니다.`}
+                            {log.type === "ProposalAdd" && "새로운 안건을 등록 하였습니다."}
+                        </p>
+                    </div>
+                ))}
+
+                {data.length === 0 &&
+                    <p style={{ textAlign: "center" }}>활동내역이 없습니다.</p>
+                }
+            </Card>
+        </div>
     );
 };
 
