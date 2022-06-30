@@ -131,11 +131,14 @@ const InputForm = styled.form`
 
     & button {
         border-radius: 5px;
-        color: #fff;
         padding: 5px 10px;
         border: none;
         background-color: #14aaf5;
         cursor: pointer;
+
+        font-family: 'CookieRun-Regular';
+        font-size: 18px;
+        color: #fff;
     }
 `;
 
@@ -194,7 +197,6 @@ const MinutesPage = ({ userObj }) => {
         const { target: { name } } = event;
 
         event.preventDefault();
-        console.log(name);
 
         if (name === "minutes") {
             await updateDoc(doc(dbService, "minutes", modalId), {
@@ -203,6 +205,11 @@ const MinutesPage = ({ userObj }) => {
 
             modalClose();
         } else if (name === "newMinutes") {
+            if (textVal === "") {
+                alert("내용을 입력해주세요!");
+                return false;
+            }
+
             setModalToggle(false);
 
             const itemObj = {
@@ -213,7 +220,7 @@ const MinutesPage = ({ userObj }) => {
             }
 
             await addDoc(collection(dbService, "minutes"), itemObj);
-            
+
             modalClose();
         }
     };
