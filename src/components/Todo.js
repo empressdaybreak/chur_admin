@@ -341,7 +341,9 @@ const Todo = ({ itemObj, userObj }) => {
                     <SubMenuContainer>
                         {itemObj.itemStatus === "new" &&
                             <>
-                                <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>    
+                                {Object.keys(itemObj.vote).length === 0 &&
+                                    <p onClick={() => { setEditing(true); setMenuFlag(false); }}>수정</p>
+                                }
                                 
                                 {Object.keys(itemObj.vote).length !== 0 ? (
                                     !itemObj.vote.some(item => item.name === userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')) ? (
