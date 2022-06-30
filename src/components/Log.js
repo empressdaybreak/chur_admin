@@ -50,15 +50,13 @@ const Log = ({ type }) => {
         <Card>
             {data.map((log, index) => (
                 <div key={index}>
-
-                    
                     <p>
-                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 유저 "{log.name}" 님을
-                        {log.type2 === "UserAdd" && "추가 하였습니다."}
-                        {log.type2 === "UserModify" && "수정 하였습니다."}
-                        {log.type2 === "UserDelete" && "삭제 하였습니다."}
-                        {log.type2 === "UserOut" && "탈퇴 처리 하였습니다."}
-                        {log.type2 === "UserIn" && "복구 처리 하였습니다."}
+                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 유저 "{log.name}" 님
+                        {log.type2 === "UserAdd" && "을 등록 하였습니다."}
+                        {log.type2 === "UserModify" && "의 정보를 수정 하였습니다."}
+                        {log.type2 === "UserDelete" && "을 삭제 하였습니다."}
+                        {log.type2 === "UserOut" && "을 탈퇴 처리 하였습니다."}
+                        {log.type2 === "UserIn" && "을 복구 처리 하였습니다."}
                     </p>
                 </div>
             ))}

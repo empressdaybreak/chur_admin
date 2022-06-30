@@ -55,22 +55,29 @@ const AlertDesc = styled.div`
     }
 `;
 
-// const Select = styled.select`
-//     border: 1px solid #dadada;
-//     border-radius: 5px;
+const Select = styled.select`    
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    color: #000;
+    font-family: 'CookieRun-Regular';
 
-//     padding: 10px;
-//     margin-right: 10px;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
 
-//     &:focus {
-//         outline: none;
-//     }
-// `;
+    background: url("${process.env.PUBLIC_URL}/img/sort-solid.svg") no-repeat 100%;
+    background-size: 8%;
+
+    &:focus {
+        outline: none;
+    }
+`;
 
 const UserListPage = ({ status, userObj }) => {
     const [data, setData] = useState([]);
     // const [searchText, setSearchText] = useState("");
-    // const rankSelect = ["계급", "1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
+    const rankSelect = ["계급(전체)", "1.킹냥이", "2.운영냥이", "3.집냥이", "4.뚱냥이", "5.아기냥이", "6.식빵굽는중"];
 
     // 이름 검색 기능
     // const doSearch = async (flag) => {
@@ -87,25 +94,27 @@ const UserListPage = ({ status, userObj }) => {
     // };
 
     // 계급을 이용한 필터링 검색
-    // const onChange = (event) => {
-    //     const { target: { value } } = event;
-    //     let q = "";
+    const onChange = (event) => {
+        const { target: { value } } = event;
+        let q = "";
 
-    //     if (value === "전체") {
-    //         q = query(collection(dbService, "users"), where("status", "==", "정상"), orderBy("rank"));
-    //     } else {
-    //         q = query(collection(dbService, "users"), where("rank", "==", value), where("status", "==", "정상"));
-    //     }
+        if (value === "계급(전체)") {
+            q = query(collection(dbService, "users"), where("status", "==", "정상"), orderBy("rank"));
+        } else {
+            q = query(collection(dbService, "users"), where("rank", "==", value), where("status", "==", "정상"));
+        }
         
-    //     onSnapshot(q, (querySnapshot) => {
-    //         const userArray = querySnapshot.docs.map(doc => ({
-    //             id: doc.id,
-    //             ...doc.data(),
-    //         }));
+        onSnapshot(q, (querySnapshot) => {
+            const userArray = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                regist_date: doc.data().regist_date.toDate(),
+                out_date: doc.data().out_date.toDate(),
+            }));
 
-    //         setData(userArray);
-    //     });
-    // };
+            setData(userArray);
+        });
+    };
 
     useEffect(() => {
         const q = query(collection(dbService, "users"), where("status", "==", status ? "정상" : "탈퇴"), orderBy("rank"));
@@ -138,7 +147,15 @@ const UserListPage = ({ status, userObj }) => {
                 <p>가입경로</p>
                 <p>지인</p>
                 <p>비고</p>
-                <p>계급</p>
+
+                <Select onChange={onChange}>
+                    {rankSelect.map((data, index) => (
+                        <option key={index} value={data}>
+                            {data}
+                        </option>
+                    ))}
+                </Select>
+
                 <p>상태</p>
                 <p>탈퇴사유</p>
                 <p>버튼</p>
@@ -147,14 +164,6 @@ const UserListPage = ({ status, userObj }) => {
             {/* <in put type="text" onChange={onChange} value={searchText} />
             <p onClick={() => doSearch("search")}>검색</p>
             <p onClick={() => doSearch("reset")}>초기화</p> */}
-
-            {/* <Select onChange={onChange}>
-                {rankSelect.map((data, index) => (
-                    <option key={index} value={data}>
-                        {data}
-                    </option>
-                ))}
-            </Select> */}
             
             <div>
                 {data.map((user, index) => (

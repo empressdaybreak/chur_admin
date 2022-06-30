@@ -16,18 +16,3 @@ body {
 
     position: relative;
 }
-
-/* body::before {
-    content: "";
-    background-image: url("../public/img/animal.png");
-    background-size: 150px;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-
-    opacity: 0.3;
-    z-index: -1;
-} */

@@ -12,9 +12,6 @@ const Home = () => {
     return (
         <LogContainer>
             <Log type={"UserLog"} />
-            <Log type={""} />
-            <Log type={""} />
-            <Log type={""} />
         </LogContainer>
     );
 };
