@@ -128,7 +128,7 @@ const UserListPage = ({ status, userObj }) => {
             }));
             setData(userArray);
         });
-    }, []);
+    }, [status]);
 
     return (
         <FlexBox>

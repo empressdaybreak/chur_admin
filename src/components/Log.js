@@ -44,7 +44,7 @@ const Log = ({ type }) => {
 
             setData(logArray);
         });
-    }, []);
+    }, [type]);
 
     return (
         <Card>
