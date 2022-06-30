@@ -11,7 +11,7 @@ const LogContainer = styled.div`
 const Home = () => {
     return (
         <LogContainer>
-            <Log type={"UserLog"} />
+            <Log />
         </LogContainer>
     );
 };

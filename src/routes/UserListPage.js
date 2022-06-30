@@ -172,7 +172,7 @@ const UserListPage = ({ status, userObj }) => {
                         userData={user}
                         userObj={userObj}
                         key={user.id}
-                        index={index+1}
+                        index={index + 1}
                     />
                 ))}
 

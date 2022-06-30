@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { dbService } from "../fbase";
 import moment from "moment";
 
@@ -29,11 +29,11 @@ const Card = styled.div`
     }
 `;
 
-const Log = ({ type }) => {
+const Log = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        const q = query(collection(dbService, "log"), where("type1", "==", type), orderBy("date", "desc"));
+        const q = query(collection(dbService, "logs"), orderBy("date", "desc"));
         
         onSnapshot(q, (querySnapshot) => {
             const logArray = querySnapshot.docs.map(doc => ({
@@ -44,22 +44,26 @@ const Log = ({ type }) => {
 
             setData(logArray);
         });
-    }, [type]);
+    }, []);
 
     return (
         <Card>
             {data.map((log, index) => (
                 <div key={index}>
                     <p>
-                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 유저 "{log.name}" 님
-                        {log.type2 === "UserAdd" && "을 등록 하였습니다."}
-                        {log.type2 === "UserModify" && "의 정보를 수정 하였습니다."}
-                        {log.type2 === "UserDelete" && "을 삭제 하였습니다."}
-                        {log.type2 === "UserOut" && "을 탈퇴 처리 하였습니다."}
-                        {log.type2 === "UserIn" && "을 복구 처리 하였습니다."}
+                        [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이 "{log.name}" 님
+                        {log.type === "UserAdd" && "을 등록 하였습니다."}
+                        {log.type === "UserModify" && "의 정보를 수정 하였습니다."}
+                        {log.type === "UserDelete" && "을 삭제 하였습니다."}
+                        {log.type === "UserOut" && "을 탈퇴 처리 하였습니다."}
+                        {log.type === "UserIn" && "을 복구 처리 하였습니다."}
                     </p>
                 </div>
             ))}
+
+            {data.length === 0 &&
+                <p style={{ textAlign: "center" }}>활동내역이 없습니다.</p>
+            }
         </Card>
     );
 };

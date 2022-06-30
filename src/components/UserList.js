@@ -1,10 +1,10 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { dbService } from "../fbase";
+import { authService, dbService } from "../fbase";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
@@ -310,7 +310,7 @@ const DatePickerBox = styled.div`
     }
 `;
 
-const UserList = ({ statusProp, userData, index }) => {
+const UserList = ({ statusProp, userData, index, userObj }) => {
     // 날짜 계산을 위한 오늘 날짜
     const date = moment().format("YYYY-MM-DD");
 
@@ -330,6 +330,7 @@ const UserList = ({ statusProp, userData, index }) => {
     
     // 탈퇴 사유 관련 state
     const [reason, setReason] = useState("");
+    const [userName, setUserName] = useState();
 
     // 날짜 관련 statue
     const [outDate, setOutDate] = useState(userData.out_date);
@@ -372,6 +373,13 @@ const UserList = ({ statusProp, userData, index }) => {
             regist_date: registDate,
             out_date: outDate,
         });
+
+        await addDoc(collection(dbService, "logs"), {
+            date: new Date(),
+            name: newName,
+            type: "UserModify",
+            writer: userObj.displayName,
+        });
     };
 
     const onEtcSubmit = async (event) => {
@@ -388,6 +396,13 @@ const UserList = ({ statusProp, userData, index }) => {
         const ok = window.confirm("삭제하시겠습니까?");
 
         if (ok) {
+            await addDoc(collection(dbService, "logs"), {
+                date: new Date(),
+                name: newName,
+                type: "UserDelete",
+                writer: userObj.displayName,
+            });
+
             await deleteDoc(doc(dbService, "users", id));
         }
     };
@@ -404,11 +419,25 @@ const UserList = ({ statusProp, userData, index }) => {
                 reason: reason,
                 out_date: new Date(),
             });
+
+            await addDoc(collection(dbService, "logs"), {
+                date: new Date(),
+                name: newName,
+                type: "UserOut",
+                writer: authService.currentUser.displayName,
+            });
         } else if (value === "탈퇴") {
             await updateDoc(doc(dbService, "users", userData.id), {
                 status: "정상",
                 reason: "",
                 out_date: new Date(),
+            });
+
+            await addDoc(collection(dbService, "logs"), {
+                date: new Date(),
+                name: newName,
+                type: "UserIn",
+                writer: authService.currentUser.displayName,
             });
         }
 

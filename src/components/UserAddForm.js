@@ -125,6 +125,13 @@ const UserAddForm = ({ userObj }) => {
 
         await addDoc(collection(dbService, "users"), userDataObj);
 
+        await addDoc(collection(dbService, "logs"), {
+            date: new Date(),
+            name: name,
+            type: "UserAdd",
+            writer: userObj.displayName,
+        })
+
         setName("");
         setPartner("");
     };
