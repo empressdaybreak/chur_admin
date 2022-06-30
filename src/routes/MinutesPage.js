@@ -149,11 +149,14 @@ const MinutesContainer = styled.div`
 
     & button {
         border-radius: 5px;
-        color: #fff;
         padding: 5px 10px;
         border: none;
         background-color: #14aaf5;
         cursor: pointer;
+
+        font-family: 'CookieRun-Regular';
+        font-size: 18px;
+        color: #fff;
     }
 `;
 
@@ -191,8 +194,15 @@ const MinutesPage = ({ userObj }) => {
         const { target: { name } } = event;
 
         event.preventDefault();
+        console.log(name);
 
         if (name === "minutes") {
+            await updateDoc(doc(dbService, "minutes", modalId), {
+                content: newTextVal,
+            });
+
+            modalClose();
+        } else if (name === "newMinutes") {
             setModalToggle(false);
 
             const itemObj = {
@@ -203,14 +213,8 @@ const MinutesPage = ({ userObj }) => {
             }
 
             await addDoc(collection(dbService, "minutes"), itemObj);
-            setTextVal("");
-        } else if (name === "newMinutes") {
-            setMinutesModifyToggle(false);
-            setModalToggle(false);
-
-            await updateDoc(doc(dbService, "minutes", modalId), {
-                content: newTextVal,
-            });
+            
+            modalClose();
         }
     };
 
@@ -230,12 +234,12 @@ const MinutesPage = ({ userObj }) => {
     };
 
     const modalClose = () => {
-        setModalToggle(false);
-        setMinutesModifyToggle(false);
         setModalData("");
         setModalDay("");
         setModalId("");
         setTextVal("");
+        setModalToggle(false);
+        setMinutesModifyToggle(false);
     }
 
     useEffect(() => {
@@ -300,7 +304,7 @@ const MinutesPage = ({ userObj }) => {
                                     <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
                                 </div>
 
-                                <InputForm onSubmit={onSubmit} name="minutes">
+                                <InputForm onSubmit={onSubmit} name="newMinutes">
                                     <textarea
                                         placeholder="회의 내용을 적어주세요."
                                         value={textVal}
@@ -314,7 +318,11 @@ const MinutesPage = ({ userObj }) => {
                             <>
                                 <div>
                                     <p>{modalDay} 회의록</p>
-                                    <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
+                                    <FontAwesomeIcon
+                                        icon={faXmark}
+                                        onClick={() => modalClose()}
+                                        style={{ cursor: "pointer" }}
+                                    />
                                 </div>
 
                                 <MinutesContainer>
@@ -324,14 +332,14 @@ const MinutesPage = ({ userObj }) => {
                                                 {modalData}
                                             </ContentForm>
                                 
-                                                <button onClick={() => {
-                                                    setMinutesModifyToggle(true);
-                                                    setNewTextVal(modalData);
-                                                }}>수정</button>
+                                            <button onClick={() => {
+                                                setMinutesModifyToggle(true);
+                                                setNewTextVal(modalData);
+                                            }}>수정</button>
                                         </>
                                     ) : (
                                         <>
-                                            <InputForm onSubmit={onSubmit} name="newMinutes">
+                                            <InputForm name="minutes" onSubmit={onSubmit}>
                                                 <textarea
                                                     placeholder={modalData}
                                                     value={newTextVal}

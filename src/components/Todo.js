@@ -296,7 +296,7 @@ const Todo = ({ itemObj, userObj }) => {
                         style={{ backgroundColor: activeStatusColor() }}
                     />
                     {!editing && (
-                        <div onClick={toggleMenu} style={{ padding: "0 10px", zIndex: "999" }}>
+                        <div onClick={toggleMenu} style={{ padding: "0 10px", zIndex: "999", cursor: "pointer" }}>  
                             <FontAwesomeIcon icon={faEllipsisV} />
                         </div>
                     )}
