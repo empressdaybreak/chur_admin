@@ -18,6 +18,10 @@ const Header = styled.div`
 
     color: #fff;
 
+    & span {
+        cursor: default;
+    }
+
     & a {
         color: #fff;
         text-decoration: none;

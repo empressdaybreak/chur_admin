@@ -107,6 +107,17 @@ const AlertDesc = styled.p`
     padding: 30px 0;
 `;
 
+const ActiveStatus = styled.span`
+    height: 10px;
+    width: 10px;
+
+    border-radius: 10px;
+
+    margin-right: 5px;
+    
+    display: inline-block;
+`;
+
 const ProposalPage = ({ userObj }) => {
     const date = moment().format("YYYY-MM-DD");
     const [newData, setNewData] = useState([]);
@@ -188,7 +199,7 @@ const ProposalPage = ({ userObj }) => {
         <TodoContainer>
             <TodoList>
                 <TodoListHeader>
-                    <p>건의사항</p>
+                    <p>건의사항 <ActiveStatus style={{ backgroundColor: "#dadada" }} /></p>
                     <p onClick={() => setAddTodoFlag(true)}>
                         <FontAwesomeIcon icon={faCat} />
                     </p>
@@ -229,7 +240,7 @@ const ProposalPage = ({ userObj }) => {
 
             <TodoList>
                 <TodoListHeader>
-                    <p>건의사항 가결</p>
+                    <p>건의사항 가결 <ActiveStatus style={{ backgroundColor: "#25e8c8" }} /></p>
                     <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
 
@@ -248,7 +259,7 @@ const ProposalPage = ({ userObj }) => {
 
             <TodoList>
                 <TodoListHeader>
-                    <p>건의사항 기각</p>
+                    <p>건의사항 기각 <ActiveStatus style={{ backgroundColor: "#ff5263" }} /></p>
                     <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
                 {disagreeData.map((item, index) => (
@@ -266,7 +277,7 @@ const ProposalPage = ({ userObj }) => {
 
             <TodoList>
                 <TodoListHeader>
-                    <p>건의사항 보류</p>
+                    <p>건의사항 보류 <ActiveStatus style={{ backgroundColor: "#796eff" }} /></p>
                     <p><FontAwesomeIcon icon={faShieldCat} /></p>
                 </TodoListHeader>
 
