@@ -124,6 +124,7 @@ const ProposalPage = ({ userObj }) => {
     const [agreeData, setAgreeData] = useState([]);
     const [disagreeData, setDisagreeData] = useState([]);
     const [holdData, setHoldData] = useState([]);
+    const [completeData, setCompleteData] = useState([]);
 
     const [inputTodo, setInputTodo] = useState("");
     const [addTodoFlag, setAddTodoFlag] = useState(false);
@@ -164,6 +165,7 @@ const ProposalPage = ({ userObj }) => {
         const agreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "agree"), orderBy("addDay"));
         const disagreeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "disagree"), orderBy("addDay"));
         const holdQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "hold"), orderBy("addDay"));
+        const completeQuery = query(collection(dbService, "item_board"), where("itemStatus", "==", "complete"), orderBy("addDay"));
 
         onSnapshot(newQuery, (querySnapshot) => {
             const itemArray = querySnapshot.docs.map(doc => ({
@@ -199,6 +201,15 @@ const ProposalPage = ({ userObj }) => {
             }));
 
             setHoldData(itemArray);
+        });
+
+        onSnapshot(completeQuery, (querySnapshot) => {
+            const itemArray = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+
+            setCompleteData(itemArray);
         });
     }, []);
 
@@ -297,6 +308,25 @@ const ProposalPage = ({ userObj }) => {
                 ))}
 
                 {holdData.length === 0 && 
+                    <AlertDesc>의견이 없습니다.</AlertDesc>
+                }
+            </TodoList>
+
+            <TodoList>
+                <TodoListHeader>
+                    <p>건의사항 처리 완료 <ActiveStatus style={{ backgroundColor: "#4169E1" }} /></p>
+                    <p><FontAwesomeIcon icon={faShieldCat} /></p>
+                </TodoListHeader>
+
+                {completeData.map((item, index) => (
+                    <Todo
+                        itemObj={item}
+                        key={index}
+                        userObj={userObj}
+                    />
+                ))}
+
+                {completeData.length === 0 && 
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>

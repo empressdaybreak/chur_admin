@@ -236,6 +236,10 @@ const Todo = ({ itemObj, userObj }) => {
                     ],
                 });
             };
+        } else if (status === "complete") {
+            await updateDoc(doc(dbService, "item_board", id), {
+                itemStatus: "complete",
+            });
         }
     };
 
@@ -264,6 +268,9 @@ const Todo = ({ itemObj, userObj }) => {
             return color;
         } else if (itemObj.itemStatus === "hold") {
             color = "#796eff";
+            return color;
+        } else if (itemObj.itemStatus === "complete") {
+            color = "#4169E1";
             return color;
         }
     };
@@ -365,6 +372,9 @@ const Todo = ({ itemObj, userObj }) => {
                             </>
                         }
 
+                        {itemObj.itemStatus !== "complete" &&
+                            <p onClick={() => updateItemStatus(itemObj.id, "complete")}>완료</p>
+                        }
                         <p onClick={() => deleteItem(itemObj.id)}>삭제</p>
                     </SubMenuContainer>
                 }
