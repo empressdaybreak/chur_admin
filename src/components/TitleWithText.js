@@ -105,7 +105,7 @@ const TitleWithText: React.FC<LogProps> = (props) => {
                                     <>
                                         {item.writer === props.userObj.displayName || props.userObj.displayName === "토꾸@breadcat" ? (
                                             <>
-                                                <p><FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(item.id)} style={{cursor: "pointer"}} /></p>
+                                                <p><FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(item.id)} style={{cursor: "pointer"}}/></p>
                                                 <p>[{item.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')} (비밀글)]</p>
                                                 <p>{item.desc}</p>
                                             </>
@@ -118,7 +118,7 @@ const TitleWithText: React.FC<LogProps> = (props) => {
                                     </>
                                 ) : (
                                     <>
-                                        {item.writer === props.userObj.displayName || props.userObj.displayName === "토꾸@breadcat" &&
+                                        {item.writer === props.userObj.displayName &&
                                             <p><FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(item.id)} style={{cursor: "pointer"}}/></p>
                                         }
                                         <p>[{item.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}]</p>
@@ -307,7 +307,7 @@ const InputForm = styled.form`
 const DataRow = styled.div`
   display: flex;
   flex-direction: row;
-  
+
   margin-bottom: 10px;
 
   & > p {
