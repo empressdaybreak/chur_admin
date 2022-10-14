@@ -108,6 +108,8 @@ const ContentForm = styled.div`
 
     white-space: pre-wrap;
     overflow-y: scroll;
+
+    line-height: 1.3;
 `;
 
 const InputForm = styled.form`
@@ -232,8 +234,8 @@ const MinutesPage = ({ userObj }) => {
             await deleteDoc(doc(dbService, "minutes", id));
         }
     };
-    
-    const modalNumberSend = (content, addDay, id) => {        
+
+    const modalNumberSend = (content, addDay, id) => {
         setModalData(content);
         setModalDay(addDay);
         setModalToggle(true);
@@ -288,7 +290,7 @@ const MinutesPage = ({ userObj }) => {
                         <div>
                             <div onClick={ () => modalNumberSend(data.content, data.addDay, data.id) } style={{cursor: "pointer"}}>
                                 <span style={{ marginRight: "10px" }}>{data.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</span>
-                                <p>{data.addDay} 회의록</p>    
+                                <p>{data.addDay} 회의록</p>
                             </div>
 
                             <FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(data.id) } style={{cursor: "pointer"}} />
@@ -338,7 +340,7 @@ const MinutesPage = ({ userObj }) => {
                                             <ContentForm>
                                                 {modalData}
                                             </ContentForm>
-                                
+
                                             <button onClick={() => {
                                                 setMinutesModifyToggle(true);
                                                 setNewTextVal(modalData);

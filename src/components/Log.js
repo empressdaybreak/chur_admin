@@ -21,7 +21,7 @@ const Card = styled.div`
 
     background-color: #fff;
   
-    height: 300px;
+    height: 400px;
     overflow: auto;
   
     & > p {
@@ -42,7 +42,7 @@ const ListHeader = styled.div`
     }
 `;
 
-const Log = () => {
+const Log:React.FC = (props) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {

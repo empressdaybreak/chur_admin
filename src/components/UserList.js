@@ -233,6 +233,8 @@ const ContentForm = styled.div`
 
     white-space: pre-wrap;
     overflow-y: scroll;
+
+    line-height: 1.3;
 `;
 
 const InputFormContainer = styled.div`
@@ -327,7 +329,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
     const [withdrawalToggle, setWithdrawalToggle] = useState(false);
     const [etcModalToggle, setEtcModalToggle] = useState(false);
     const [etcModifyToggle, setEtcModifyToggle] = useState(false);
-    
+
     // 탈퇴 사유 관련 state
     const [reason, setReason] = useState("");
     const [userName, setUserName] = useState();
@@ -367,7 +369,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
         await updateDoc(doc(dbService, "users", userData.id), {
             name: newName,
             regist_root: newRoot,
-            partner: newPartner,            
+            partner: newPartner,
             rank: newRank,
             reason: newReason,
             regist_date: registDate,
@@ -468,7 +470,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                         placeholder="이름"
                         autoComplete='off'
                     />
-                    
+
 
                     {statusProp === "정상" ? (
                         <>
@@ -483,7 +485,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                             <p>{moment(date).diff(moment(userData.regist_date), "days")}일</p>
                         </>
                     ) : (
-                        
+
                         <>
                             <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
                             <DatePickerBox>
@@ -514,7 +516,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                         autoComplete='off'
                     />
                     <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
-                    
+
                     <Select name="NewRankSelect" value={newRank} onChange={onChange}>
                         {rankSelect.map((data, index) => (
                             <option key={index} value={data}>
@@ -527,7 +529,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                         {userData.status}
                     </p>
 
-                    {userData.status === "탈퇴" ? ( 
+                    {userData.status === "탈퇴" ? (
                         <Input
                             type="text"
                             name="NewReason"
@@ -549,18 +551,18 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                     <p>{index}</p>
                     <p>{userData.name}</p>
                     <p>{moment(userData.regist_date).format("YYYY-MM-DD")}</p>
-                        
+
                     {statusProp === "정상" ? (
                         <p>{moment(date).diff(moment(userData.regist_date), "days")+1 }일</p>
                     ) : (
                         <p>{moment(userData.out_date).format("YYYY-MM-DD")}</p>
                     )}
-                        
+
                     <p>{userData.regist_root}</p>
                     <p>{userData.partner}</p>
                     <DetailButton onClick={() => setEtcModalToggle(true)}>자세히</DetailButton>
                     <p>{userData.rank}</p>
-                
+
                     <p>
                         <ActiveStatus style={{ backgroundColor: userData.status === "정상" ? "#28a745" : "#dc3545" }} />
                         {userData.status}
@@ -569,7 +571,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                         {statusProp === "정상" ? (
                         <>
                             <p>-</p>
-                                
+
                             <ButtonCell>
                                 <p onClick={toggleEditing}>수정</p>
                                 <p onClick={() => setWithdrawalToggle(true)}>탈퇴</p>
@@ -579,7 +581,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                     ) : (
                         <>
                             <p>{userData.reason}</p>
-                            
+
                             <ButtonCell>
                                 <p onClick={toggleEditing}>수정</p>
                                 <p onClick={() => setWithdrawalToggle(true)}>복구</p>
@@ -633,7 +635,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
                                 <ContentForm>
                                     {newEtc}
                                 </ContentForm>
-                                    
+
                                 <p onClick={() => setEtcModifyToggle(true)}>
                                     수정
                                 </p>
