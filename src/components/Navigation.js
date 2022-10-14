@@ -121,14 +121,14 @@ const Navigation = ({ userObj, refreshUser }) => {
         <Header>
             <div>
                 <span>CHUR@톤베리</span>
-                {/* <Link to="/">Home</Link> */}
-                <Link to="/">냥이관리</Link>
+                <Link to="/">메인</Link>
+                <Link to="/member_admin">냥이관리</Link>
                 <Link to="/withdrawaluseradmin">탈퇴한냥이</Link>
                 <Link to="/proposal">건의사항</Link>
                 <Link to="/minutes">회의록</Link>
-                {userObj.displayName === "토꾸@breadcat" &&
-                    <Link to="/test_page">메인(개발중)</Link>
-                }
+                {/*{userObj.displayName === "토꾸@breadcat" &&*/}
+                {/*    <Link to="/test_page">메인(개발중)</Link>*/}
+                {/*}*/}
             </div>
 
             <div>

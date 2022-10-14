@@ -125,7 +125,11 @@ const Auth = () => {
                 // console.log(data);
             }
         } catch (error) {
-            setError("정보가 일치하지 않습니다! \n 잘못 입력하신게 아니라면, 관리자에게 문의해주세요!");
+            if(newAccount) {
+                setError("가입 형식이 맞지 않습니다! \n 이메일 형식이랑 패스워드 6자 이상 입력해주세요!");
+            } else {
+                setError("정보가 일치하지 않습니다! \n 잘못 입력하신게 아니라면, 관리자에게 문의해주세요!");
+            }
             // console.log(error);
         }
     }

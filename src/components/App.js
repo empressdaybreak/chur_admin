@@ -1,11 +1,11 @@
-import { faShieldCat } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import {faShieldCat} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {useEffect, useState} from "react";
 import styled from "styled-components";
-import { authService } from "../fbase";
+import {authService} from "../fbase";
 import AppRouter from "./Router";
 
-const SplashScreen = styled.div` 
+const SplashScreen = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,58 +25,58 @@ const SplashScreen = styled.div`
 `;
 
 function App() {
-  const [init, setInit] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userObj, setUserObj] = useState(null);
+    const [init, setInit] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userObj, setUserObj] = useState(null);
 
-  const refreshUser = () => {
-    const user = authService.currentUser;
-
-    setUserObj({
-      displayName: user.displayName,
-      uid: user.uid,
-      updateProfile: (args) => user.updateProfile(args),
-    });
-  }
-
-  useEffect(() => {
-    authService.onAuthStateChanged((user) => {
-      if (user) {
-        setIsLoggedIn(true);
+    const refreshUser = () => {
+        const user = authService.currentUser;
 
         setUserObj({
-          email: user.email,
-          uid: user.uid,
-          displayName: user.displayName,
-        })
-      } else {
-        setIsLoggedIn(false);
-      }
+            displayName: user.displayName,
+            uid: user.uid,
+            updateProfile: (args) => user.updateProfile(args),
+        });
+    }
 
-      setTimeout(() => {
-        setInit(true);  
-      }, 2000);
+    useEffect(() => {
+        authService.onAuthStateChanged((user) => {
+            if (user) {
+                setIsLoggedIn(true);
 
-      // console.log(user);
-    });
-  }, []);
+                setUserObj({
+                    email: user.email,
+                    uid: user.uid,
+                    displayName: user.displayName,
+                })
+            } else {
+                setIsLoggedIn(false);
+            }
 
-  return (
-    <>
-      {init ? (
-        <AppRouter
-          isLoggedIn={isLoggedIn}
-          userObj={userObj}
-          refreshUser={refreshUser}
-        />
-      ) : (
-          <SplashScreen>
-            <FontAwesomeIcon icon={ faShieldCat } />
-            <p>로딩중</p>
-          </SplashScreen>
-      )}
-    </>
-  );
+            setTimeout(() => {
+                setInit(true);
+            }, 2000);
+
+            // console.log(user);
+        });
+    }, []);
+
+    return (
+        <>
+            {init ? (
+                <AppRouter
+                    isLoggedIn={isLoggedIn}
+                    userObj={userObj}
+                    refreshUser={refreshUser}
+                />
+            ) : (
+                <SplashScreen>
+                    <FontAwesomeIcon icon={faShieldCat}/>
+                    <p>로딩중</p>
+                </SplashScreen>
+            )}
+        </>
+    );
 }
 
 export default App;

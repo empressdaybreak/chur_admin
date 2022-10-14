@@ -30,7 +30,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
             if (userObj !== null) {
                 if (userObj.displayName !== null) {
                     const a = userObj.displayName;
-    
+
                     if (a.includes(process.env.REACT_APP_USERAUTH_TAG)) {
                         setIsAuth(true);
                     } else {
@@ -38,7 +38,7 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                     }
                 } else if (userObj.displayName === null) {
                     setIsAuth(false);
-                } 
+                }
             }
         };
 
@@ -63,10 +63,10 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                                     <Home />
                                 </Route> */}
 
-                                <Route exact path="/">
+                                <Route exact path="/member_admin">
                                     <UserListPage status={true} userObj={userObj} />
                                 </Route>
-                                
+
                                 <Route exact path="/proposal">
                                     <ProposalPage userObj={userObj} />
                                 </Route>
@@ -79,8 +79,8 @@ const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
                                     <MinutesPage userObj={userObj} />
                                 </Route>
 
-                                <Route exact path="/test_page">
-                                    <Home />
+                                <Route exact path="/">
+                                    <Home userObj={userObj} />
                                 </Route>
                             </>
                         ) : (
