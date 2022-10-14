@@ -100,13 +100,13 @@ const Navigation = ({ userObj, refreshUser }) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-    
+
         if (name.includes(process.env.REACT_APP_USERAUTH_TAG)) {
             await updateProfile(authService.currentUser, {
                 displayName: name,
             });
-            
-            refreshUser();    
+
+            refreshUser();
         } else {
             alert("관리자에게 문의해주세요.");
         }
@@ -116,7 +116,7 @@ const Navigation = ({ userObj, refreshUser }) => {
         const { target: { value } } = event;
         setName(value);
     }
-    
+
     return(
         <Header>
             <div>
@@ -127,10 +127,10 @@ const Navigation = ({ userObj, refreshUser }) => {
                 <Link to="/proposal">건의사항</Link>
                 <Link to="/minutes">회의록</Link>
                 {userObj.displayName === "토꾸@breadcat" &&
-                    <Link to="/test_page">테스트페이지</Link>
+                    <Link to="/test_page">메인(개발중)</Link>
                 }
             </div>
-            
+
             <div>
                 {userObj.displayName === null ? (
                     <InputForm>
@@ -140,7 +140,7 @@ const Navigation = ({ userObj, refreshUser }) => {
                 ) : (
                     <span>{userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '')} 님</span>
                 )}
-            
+
                 <p onClick={onLogOutClick}>로그아웃</p>
             </div>
         </Header>

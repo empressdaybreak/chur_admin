@@ -20,9 +20,10 @@ const Card = styled.div`
     position: relative;
 
     background-color: #fff;
-
-    position: relative;
-
+  
+    height: 300px;
+    overflow: auto;
+  
     & > p {
         white-space: pre-wrap;
         position: relative;
@@ -46,7 +47,7 @@ const Log = () => {
 
     useEffect(() => {
         const q = query(collection(dbService, "logs"), orderBy("date", "desc"));
-        
+
         onSnapshot(q, (querySnapshot) => {
             const logArray = querySnapshot.docs.map(doc => ({
                 id: doc.id,
@@ -69,11 +70,11 @@ const Log = () => {
                     <div key={index}>
                         <p>
                             [{moment(log.date).format("YYYY-MM-DD")}] "{log.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}" 님이
-                            {log.type === "UserAdd" && `${log.name} 님을 등록 하였습니다.`}
-                            {log.type === "UserModify" && `${log.name} 의 정보를 수정 하였습니다.`}
-                            {log.type === "UserDelete" && `${log.name} 을 삭제 하였습니다.`}
-                            {log.type === "UserOut" && `${log.name} 을 탈퇴 처리 하였습니다.`}
-                            {log.type === "UserIn" && `${log.name} 을 복구 처리 하였습니다.`}
+                            {log.type === "UserAdd" && ` "${log.name}" 님을 등록 하였습니다.`}
+                            {log.type === "UserModify" && ` "${log.name}" 의 정보를 수정 하였습니다.`}
+                            {log.type === "UserDelete" && ` "${log.name}" 을 삭제 하였습니다.`}
+                            {log.type === "UserOut" && ` "${log.name}" 을 탈퇴 처리 하였습니다.`}
+                            {log.type === "UserIn" && ` "${log.name}" 을 복구 처리 하였습니다.`}
                             {log.type === "ProposalAdd" && "새로운 안건을 등록 하였습니다."}
                         </p>
                     </div>
