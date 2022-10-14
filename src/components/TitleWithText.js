@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import styled from "styled-components";
 import moment from "moment";
-import {addDoc, collection} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc} from "firebase/firestore";
 import {dbService} from "../fbase";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPaperPlane, faShieldCat, faXmark} from "@fortawesome/free-solid-svg-icons";
@@ -42,6 +42,14 @@ const TitleWithText: React.FC<LogProps> = (props) => {
     const changeDesc = (e) => {
         setContentDesc(e);
     }
+
+    const onDeleteItem = async (id) => {
+        const ok = window.confirm("삭제하시겠습니까?");
+
+        if (ok) {
+            await deleteDoc(doc(dbService, "request", id));
+        }
+    };
 
     return (
         <div>
@@ -97,6 +105,7 @@ const TitleWithText: React.FC<LogProps> = (props) => {
                                     <>
                                         {item.writer === props.userObj.displayName || props.userObj.displayName === "토꾸@breadcat" ? (
                                             <>
+                                                <p><FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(item.id)} style={{cursor: "pointer"}} /></p>
                                                 <p>[{item.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')} (비밀글)]</p>
                                                 <p>{item.desc}</p>
                                             </>
@@ -109,6 +118,9 @@ const TitleWithText: React.FC<LogProps> = (props) => {
                                     </>
                                 ) : (
                                     <>
+                                        {item.writer === props.userObj.displayName || props.userObj.displayName === "토꾸@breadcat" &&
+                                            <p><FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(item.id)} style={{cursor: "pointer"}}/></p>
+                                        }
                                         <p>[{item.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}]</p>
                                         <p>{item.desc}</p>
                                     </>
@@ -295,8 +307,10 @@ const InputForm = styled.form`
 const DataRow = styled.div`
   display: flex;
   flex-direction: row;
+  
+  margin-bottom: 10px;
 
-  & > p:first-of-type {
+  & > p {
     margin-right: 10px;
   }
 `;
