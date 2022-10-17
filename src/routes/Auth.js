@@ -168,9 +168,9 @@ const Auth = () => {
                         <LoginButton onClick={onSubmit}>{newAccount ? "계정생성" : "로그인"}</LoginButton>
                         {error && <ErrorAlert>{error}</ErrorAlert>}
 
-                        <SignInText onClick={toggleAccount}>
-                            {newAccount ? "로그인하러 가기" : "계정 생성하기"}
-                        </SignInText>
+                        {/*<SignInText onClick={toggleAccount}>*/}
+                        {/*    {newAccount ? "로그인하러 가기" : "계정 생성하기"}*/}
+                        {/*</SignInText>*/}
                     </div>
 
                     <div>
