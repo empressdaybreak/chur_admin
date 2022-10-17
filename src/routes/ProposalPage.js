@@ -138,10 +138,11 @@ const ProposalPage = ({ userObj }) => {
             itemDesc: inputTodo,
             writer: userObj.displayName,
             addDay: date,
-            vote: {},            
-        };        
+            vote: {},
+        };
 
         await addDoc(collection(dbService, "item_board"), itemObj);
+
         await addDoc(collection(dbService, "logs"), {
             date: new Date(),
             name: "",
@@ -150,6 +151,29 @@ const ProposalPage = ({ userObj }) => {
         });
 
         setInputTodo("");
+
+        // discord webhook 전송 (새 건의 사항이 있을때만 트리거 됨)
+        const request = new XMLHttpRequest();
+
+        request.open("post", "https://discord.com/api/webhooks/1031428285424488478/Y58g61-ephCBSQAy6_cXYXZFgAJzJiXtdIcmOf_TNZqeDoNJm_CgqOJJ0aJE0xgn6_ef");
+        request.setRequestHeader('Content-type', 'application/json');
+
+        const myEmbed = {
+            title: "새로운 알림!",
+            description: '"' + userObj.displayName.replace(process.env.REACT_APP_USERAUTH_TAG, '') + '" 님이 새로운 건의사항을 등록하였다냥! \n https://empressdaybreak.github.io/chur_admin/#/proposal',
+            color: hexToDecimal("#58b9ff"),
+        }
+
+        const params = {
+            username: "운영냥이봇",
+            embeds: [myEmbed]
+        }
+
+        request.send(JSON.stringify(params));
+    }
+
+    const hexToDecimal = (hex) => {
+        return parseInt(hex.replace("#", ""), 16)
     }
 
     const onChange = (event) => {
@@ -251,7 +275,7 @@ const ProposalPage = ({ userObj }) => {
                     />
                 ))}
 
-                {newData.length === 0 && 
+                {newData.length === 0 &&
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>
@@ -270,7 +294,7 @@ const ProposalPage = ({ userObj }) => {
                     />
                 ))}
 
-                {agreeData.length === 0 && 
+                {agreeData.length === 0 &&
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>
@@ -288,7 +312,7 @@ const ProposalPage = ({ userObj }) => {
                     />
                 ))}
 
-                {disagreeData.length === 0 && 
+                {disagreeData.length === 0 &&
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>
@@ -307,7 +331,7 @@ const ProposalPage = ({ userObj }) => {
                     />
                 ))}
 
-                {holdData.length === 0 && 
+                {holdData.length === 0 &&
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>
@@ -326,7 +350,7 @@ const ProposalPage = ({ userObj }) => {
                     />
                 ))}
 
-                {completeData.length === 0 && 
+                {completeData.length === 0 &&
                     <AlertDesc>의견이 없습니다.</AlertDesc>
                 }
             </TodoList>

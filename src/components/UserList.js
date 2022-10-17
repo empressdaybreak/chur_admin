@@ -385,7 +385,7 @@ const UserList = ({ statusProp, userData, index, userObj }) => {
     };
 
     const onEtcSubmit = async (event) => {
-        event.preventDefault();
+        event.preventDefault()
         setEtcModalToggle(false);
         setEtcModifyToggle(false);
 
