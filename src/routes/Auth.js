@@ -97,6 +97,12 @@ const SignInText = styled.p`
     cursor: pointer;
 `;
 
+const LogoContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+`;
+
 const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -173,9 +179,10 @@ const Auth = () => {
                         {/*</SignInText>*/}
                     </div>
 
-                    <div>
-                        <FontAwesomeIcon icon={faShieldCat} />
-                    </div>
+                    <LogoContainer>
+                        {/*<FontAwesomeIcon icon={faShieldCat} />*/}
+                        <img src={`${process.env.PUBLIC_URL}/img/discord_churu_bot4.png`} alt={""} />
+                    </LogoContainer>
                 </div>
             </FlexBox>
         </AuthContainer>
