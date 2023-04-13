@@ -1,0 +1,6 @@
+{
+  "name": "test",
+  "start_url": "/",
+  "id": "super_app",
+  "display": "standalone"
+}
