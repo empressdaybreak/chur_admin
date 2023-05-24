@@ -1,14 +1,17 @@
-import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, updateDoc} from "firebase/firestore";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
-import { dbService } from "../fbase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFeatherPointed, faXmark } from "@fortawesome/free-solid-svg-icons";
+import React, {useEffect, useState} from "react";
+import {dbService} from "../fbase";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFeatherPointed, faXmark} from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {ko} from "date-fns/esm/locale";
 
 
-const MinutesPage = ({ userObj }) => {
-    const date = moment().format("YYYY-MM-DD");
+const MinutesPage = ({userObj}) => {
+    //const date = moment().format("YYYY-MM-DD");
     const [textVal, setTextVal] = useState("");
     const [newTextVal, setNewTextVal] = useState("");
     const [data, setData] = useState([]);
@@ -20,8 +23,10 @@ const MinutesPage = ({ userObj }) => {
 
     const [minutesModifyToggle, setMinutesModifyToggle] = useState(false);
 
+    const [dateInit, setDateInit] = useState(new Date());
+
     const handleSetValue = (event) => {
-        const { target: { name, value } } = event;
+        const {target: {name, value}} = event;
 
         if (name === "textBox") {
             setTextVal(value);
@@ -31,7 +36,7 @@ const MinutesPage = ({ userObj }) => {
     };
 
     const onSubmit = async (event) => {
-        const { target: { name } } = event;
+        const {target: {name}} = event;
 
         event.preventDefault();
 
@@ -53,7 +58,7 @@ const MinutesPage = ({ userObj }) => {
                 index: data.length,
                 content: textVal,
                 writer: userObj.displayName,
-                addDay: date,
+                addDay: moment(dateInit).format("YYYY-MM-DD"),
             }
 
             await addDoc(collection(dbService, "minutes"), itemObj);
@@ -84,6 +89,7 @@ const MinutesPage = ({ userObj }) => {
         setTextVal("");
         setModalToggle(false);
         setMinutesModifyToggle(false);
+        setDateInit(new Date());
     }
 
     useEffect(() => {
@@ -102,7 +108,7 @@ const MinutesPage = ({ userObj }) => {
     return (
         <>
             <NewWriteButton onClick={() => setModalToggle(true)}>
-                <FontAwesomeIcon icon={faFeatherPointed} />
+                <FontAwesomeIcon icon={faFeatherPointed}/>
                 새로쓰기
             </NewWriteButton>
 
@@ -110,12 +116,15 @@ const MinutesPage = ({ userObj }) => {
                 {data.map((data, index) => (
                     <ArticleCard key={index}>
                         <div>
-                            <div onClick={ () => modalNumberSend(data.content, data.addDay, data.id) } style={{cursor: "pointer"}}>
-                                <span style={{ marginRight: "10px" }}>{data.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</span>
+                            <div onClick={() => modalNumberSend(data.content, data.addDay, data.id)}
+                                 style={{cursor: "pointer"}}>
+                                <span
+                                    style={{marginRight: "10px"}}>{data.writer.replace(process.env.REACT_APP_USERAUTH_TAG, '')}</span>
                                 <p>{data.addDay} 회의록</p>
                             </div>
 
-                            <FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(data.id) } style={{cursor: "pointer"}} />
+                            <FontAwesomeIcon icon={faXmark} onClick={() => onDeleteItem(data.id)}
+                                             style={{cursor: "pointer"}}/>
                         </div>
                     </ArticleCard>
                 ))}
@@ -131,8 +140,19 @@ const MinutesPage = ({ userObj }) => {
                         {modalData === "" ? (
                             <>
                                 <div>
-                                    <p>{date} 회의록</p>
-                                    <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()} style={{cursor: "pointer"}} />
+                                    <DatePickerContent>
+                                        <DatePickerBox>
+                                            <DatePicker
+                                                selected={dateInit}
+                                                onChange={(date) => setDateInit(date)}
+                                                locale={ko}
+                                                dateFormat="yyyy-MM-dd"
+                                            />
+                                        </DatePickerBox>
+                                        <p>회의록</p>
+                                    </DatePickerContent>
+                                    <FontAwesomeIcon icon={faXmark} onClick={() => modalClose()}
+                                                     style={{cursor: "pointer"}}/>
                                 </div>
 
                                 <InputForm onSubmit={onSubmit} name="newMinutes">
@@ -152,7 +172,7 @@ const MinutesPage = ({ userObj }) => {
                                     <FontAwesomeIcon
                                         icon={faXmark}
                                         onClick={() => modalClose()}
-                                        style={{ cursor: "pointer" }}
+                                        style={{cursor: "pointer"}}
                                     />
                                 </div>
 
@@ -166,7 +186,8 @@ const MinutesPage = ({ userObj }) => {
                                             <button onClick={() => {
                                                 setMinutesModifyToggle(true);
                                                 setNewTextVal(modalData);
-                                            }}>수정</button>
+                                            }}>수정
+                                            </button>
                                         </>
                                     ) : (
                                         <>
@@ -209,10 +230,10 @@ const ArticleCard = styled.div`
     padding: 20px;
     margin: 20px;
     box-sizing: border-box;
-    
+
     display: flex;
     flex-direction: column;
-    justify-content: space-between;    
+    justify-content: space-between;
 
     &:not(:last-child) {
         margin-right: 10px;
@@ -244,7 +265,7 @@ const ArticleCard = styled.div`
 const ModalAlert = styled.div`
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     color: #000;
 
     position: fixed;
@@ -258,7 +279,7 @@ const ModalAlert = styled.div`
         background: #fff;
 
         font-size: 20px;
-        
+
         position: absolute;
         left: 50%;
         top: 50%;
@@ -359,15 +380,35 @@ const AlertDesc = styled.p`
 `;
 
 const NewWriteButton = styled.p`
-  border-radius: 5px;
-  color: #fff;
-  padding: 10px;
-  border: none;
-  margin: 20px;
-  background-color: #14aaf5;
-  cursor: pointer;
-  font-size: 18px;
-  text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    margin: 20px;
+    background-color: #14aaf5;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+`;
+
+const DatePickerBox = styled.div`
+    & input {
+        border: 1px solid #dadada;
+        border-radius: 5px;
+
+        padding: 10px;
+        margin-right: 10px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+`;
+
+const DatePickerContent = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 `;
 
 export default MinutesPage;
